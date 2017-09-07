@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sneakModifier = 0.5f;
     [SerializeField] private bool canSneakWhileRunning = true;
 
+    [Header("Temp feedback")]
+    [SerializeField] private GameObject visuals;
+
     [Header("Debug")]
     [ReadOnly] public float verticalInput;
     [ReadOnly] public float horizontalInput;
@@ -37,7 +40,7 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool sneakInput;
     [ReadOnly] public bool slideInput;
 
-    private bool isMoving;
+    [ReadOnly] public bool isMoving;
 
     private float sprintStartTime;
 
@@ -81,7 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         verticalInput = Input.GetAxis("Vertical");
         horizontalInput = Input.GetAxis("Horizontal");
-        isMoving = Mathf.Abs(verticalInput) > 0.05f || Mathf.Abs(horizontalInput) < 0.05f;
+        isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
         jumpInput = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0);
         grabInput = Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.Joystick1Button3);
@@ -96,23 +99,31 @@ public class PlayerController : MonoBehaviour
 
         //Been sprinting for long enough?
         if (Time.timeSinceLevelLoad - sprintStartTime > slideWaitTime)
-            slideInput = Input.GetKeyDown(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.2f;
+            slideInput = Input.GetKeyDown(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.05f;
 
         //If we are not moving we can crouch
-        if (!isMoving && !sprintInput)
+        if (!isMoving)
         {
             sneakInput = false;
-
-            if (Input.GetKeyDown(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.2f)
-                crouchInput = !crouchInput;
+            crouchInput = Input.GetKey(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.05f;
         }
         //If we are moving then we can sneak
         else if (isMoving)
         {
             crouchInput = false;
+            sneakInput = Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.Joystick1Button4);
+        }
 
-            if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Joystick1Button9))
-                sneakInput = !sneakInput;
+        //Temporary feedback
+        if (crouchInput || sneakInput)
+        {
+            visuals.transform.localPosition = new Vector3(0, -0.5f, 0);
+            visuals.transform.localScale = new Vector3(1, 0.5f, 1);
+        }
+        else
+        {
+            visuals.transform.localPosition = new Vector3(0, 0, 0);
+            visuals.transform.localScale = new Vector3(1, 1, 1);
         }
 
         //Can't sneak while sprinting? Are we sprinting? disable sneaking
@@ -122,10 +133,6 @@ public class PlayerController : MonoBehaviour
 
     private void Turn()
     {
-        //Don't turn if we're not moving
-        //if (!isMoving)
-        //    return;
-
         //Set forward direction
         if (playerCamera != null)
         {

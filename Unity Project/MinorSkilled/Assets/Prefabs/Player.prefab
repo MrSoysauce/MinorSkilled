@@ -231,7 +231,8 @@ MonoBehaviour:
   slideWaitTime: 0.5
   runModifier: 2
   sneakModifier: 0.5
-  canSneakWhileRunning: 1
+  canSneakWhileRunning: 0
+  visuals: {fileID: 1437968864215724}
   verticalInput: 0
   horizontalInput: 0
   canMove: 1
@@ -245,6 +246,7 @@ MonoBehaviour:
   crouchInput: 0
   sneakInput: 0
   slideInput: 0
+  isMoving: 0
 --- !u!114 &114828160176823498
 MonoBehaviour:
   m_ObjectHideFlags: 1
