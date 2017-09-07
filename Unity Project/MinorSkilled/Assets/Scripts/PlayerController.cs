@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
-
+public class PlayerController : MonoBehaviour
+{
     [SerializeField] private float runSpeed = 2;
     [SerializeField] private float jumpStrength = 5;
     [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
     [SerializeField] private Vector3 gravity = new Vector3(0,-20,0);
+    [SerializeField] public bool useGravity = true;
 
     [Header("Debug")]
     [ReadOnly] public float verticalInput;
@@ -83,7 +84,8 @@ public class PlayerController : MonoBehaviour {
     private void FixedUpdate()
     {
         //Apply gravity
-        rb.AddForce(gravity, ForceMode.Acceleration);
+        if (useGravity)
+            rb.AddForce(gravity, ForceMode.Acceleration);
         if (!canMove) return;
         //Run
         float slow = 1;
