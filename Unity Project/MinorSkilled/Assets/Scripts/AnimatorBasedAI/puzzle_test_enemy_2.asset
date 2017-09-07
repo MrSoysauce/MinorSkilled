@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b7c8f529d27cfc479e75887ef10f565, type: 3}
+  m_Name: puzzle_test_enemy_2
+  m_EditorClassIdentifier: 
+  loop: 1
+  ordered: 1
+  waypoints:
+  - {x: -2.3200047, y: 2.5746694, z: -3.0975094}
+  - {x: -2.4914784, y: 2.3348904, z: 12.823321}
+  - {x: 12.325901, y: 2.414521, z: 12.470726}
+  - {x: 12.43228, y: 2.5074298, z: -2.3605857}
