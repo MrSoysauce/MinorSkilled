@@ -15,27 +15,32 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public float verticalInput;
     [ReadOnly] public float horizontalInput;
     [ReadOnly] public bool canMove = true;
+    [HideInInspector] public bool allowJump = true;
     [ReadOnly,SerializeField] private bool canJump = true;
-
+        
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool grabInput;
     [HideInInspector] public bool pulling;
     public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f); } }
 
+    private bool sprintInput;
+    private bool crouchInput;
+
     private bool jumpInput;
     private Vector3 forward;
     private Camera playerCamera;
 
-    void Start () {
+    private void Start ()
+    {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         if (Camera.main != null) playerCamera = Camera.main;
-        else Debug.LogError("U don't have a main camera, b-b-baka~");
+        else Debug.LogError("Main scene camera is missing! Please make sure that there is a camera tagged Main Camera!");
     }
-	
-	void Update ()
+
+    private void Update ()
 	{
 	    GetInput();
 
@@ -64,9 +69,16 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         jumpInput = Input.GetButton("Jump");
         grabInput = Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.Joystick1Button3);
+
+
     }
-    public void Turn()
+
+    private void Turn()
     {
+        //Don't turn if we're not moving
+        if (horizontalInput == 0 && verticalInput == 0)
+            return;
+
         //Set forward direction
         if (playerCamera != null)
         {
@@ -93,7 +105,7 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(forward * runSpeed * slow, ForceMode.Impulse);
 
         //Jump
-        if (jumpInput && canJump)
+        if (jumpInput && canJump && allowJump)
         {
             rb.AddForce(0, jumpStrength * 100, 0);
             canJump = false;

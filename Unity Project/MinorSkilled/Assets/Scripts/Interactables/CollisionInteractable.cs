@@ -4,21 +4,33 @@ using UnityEngine;
 
 public abstract class CollisionInteractable : InteractableBase
 {
-    [SerializeField] private bool isTrigger;
-
     private void OnCollisionEnter(Collision col)
     {
-        if (isTrigger)
-            return;
-
-        OnInteract(col.gameObject);
+        OnStartInteract(col.gameObject);
     }
 
     private void OnTriggerEnter(Collider col)
     {
-        if (!isTrigger)
-            return;
+        OnStartInteract(col.gameObject);
+    }
 
-        OnInteract(col.gameObject);
+    private void OnTriggerStay(Collider other)
+    {
+        OnInteract(other.gameObject);
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        OnInteract(other.gameObject);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        OnEndInteract(other.gameObject);
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        OnEndInteract(other.gameObject);
     }
 }

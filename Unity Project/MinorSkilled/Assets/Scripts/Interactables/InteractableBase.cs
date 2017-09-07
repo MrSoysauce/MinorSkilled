@@ -4,5 +4,7 @@ using UnityEngine;
 
 public abstract class InteractableBase : MonoBehaviour
 {
-    protected abstract void OnInteract(GameObject interacting);
+    protected virtual void OnStartInteract(GameObject interacting) { }
+    protected virtual void OnInteract(GameObject interacting) { }
+    protected virtual void OnEndInteract(GameObject interacting) { }
 }
