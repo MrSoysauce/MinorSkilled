@@ -76,7 +76,7 @@ public class WorldRotateController : MonoBehaviour
     {
         FreezeObjects();
 
-        Vector3 rot = transform.rotation.eulerAngles;
+        Quaternion rot = transform.rotation;
         float counter = 0;
         int direction = (int)Mathf.Sign((int) amount);
 
@@ -88,8 +88,8 @@ public class WorldRotateController : MonoBehaviour
             yield return null;
         }
         //Confirm rotation
-        rot.x += (int) amount;
-        transform.rotation = Quaternion.Euler(rot);
+        transform.rotation = rot;
+        transform.Rotate(90, 0, 0);
 
         UnFreezeObjects();
 

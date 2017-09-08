@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.AI;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -12,11 +13,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool useGravity = true;
 
     [Tooltip("The time the player has to be sprinting before he can slide (stops players from insta sliding)")]
-    [SerializeField] private float slideWaitTime = 0.5f;
+    [SerializeField] private float slideTime = 0.2f;
 
     [SerializeField] private float runModifier = 2;
     [SerializeField] private float sneakModifier = 0.5f;
-    [SerializeField] private bool canSneakWhileRunning = true;
 
     [Header("Temp feedback")]
     [SerializeField] private GameObject visuals;
@@ -34,18 +34,22 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool pulling;
     public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f); } }
 
+    [Header("Input")]
     [ReadOnly] public bool jumpInput;
     [ReadOnly] public bool sprintInput;
     [ReadOnly] public bool crouchInput;
-    [ReadOnly] public bool sneakInput;
-    [ReadOnly] public bool slideInput;
-
     [ReadOnly] public bool isMoving;
-
-    private float sprintStartTime;
 
     private Vector3 forward;
     private Camera playerCamera;
+
+    [Header("Movement variables")]
+    [ReadOnly] public bool crouching;
+    [ReadOnly] public bool sprinting;
+
+    [ReadOnly] public bool sliding;
+
+    private Coroutine slidingRoutine = null;
 
     private void Start ()
     {
@@ -73,7 +77,7 @@ public class PlayerController : MonoBehaviour
 	    }
 
 	    //If the player is locked he should not be able to turn
-	    if (!canMove) return;
+        if (!canMove) return;
 	    Turn();
 
 	    //Check if can jump
@@ -87,48 +91,10 @@ public class PlayerController : MonoBehaviour
         isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
         jumpInput = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0);
-        grabInput = Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.Joystick1Button3);
+        grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3);
 
-        //Sprinting
-        bool oldSprint = sprintInput;
         sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Joystick1Button2);
-        if (sprintInput && !oldSprint) //Wasn't sprinting before, save time
-            sprintStartTime = Time.timeSinceLevelLoad;
-        else if (!sprintInput)
-            sprintStartTime = Time.timeSinceLevelLoad; //Just reset time 
-
-        //Been sprinting for long enough?
-        if (Time.timeSinceLevelLoad - sprintStartTime > slideWaitTime)
-            slideInput = Input.GetKeyDown(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.05f;
-
-        //If we are not moving we can crouch
-        if (!isMoving)
-        {
-            sneakInput = false;
-            crouchInput = Input.GetKey(KeyCode.C) || Input.GetAxis("XboxAxis9") > 0.05f;
-        }
-        //If we are moving then we can sneak
-        else if (isMoving)
-        {
-            crouchInput = false;
-            sneakInput = Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.Joystick1Button4);
-        }
-
-        //Temporary feedback
-        if (crouchInput || sneakInput)
-        {
-            visuals.transform.localPosition = new Vector3(0, -0.5f, 0);
-            visuals.transform.localScale = new Vector3(1, 0.5f, 1);
-        }
-        else
-        {
-            visuals.transform.localPosition = new Vector3(0, 0, 0);
-            visuals.transform.localScale = new Vector3(1, 1, 1);
-        }
-
-        //Can't sneak while sprinting? Are we sprinting? disable sneaking
-        if (!canSneakWhileRunning && sprintInput)
-            sneakInput = false;
+        crouchInput = Input.GetKey(KeyCode.K) || Input.GetAxis("XboxAxis9") > 0.5f;
     }
 
     private void Turn()
@@ -147,16 +113,63 @@ public class PlayerController : MonoBehaviour
         if (forward.magnitude > 0.001f && isMoving) transform.rotation = Quaternion.LookRotation(forward);
     }
 
+    private void ProcessInput()
+    {
+        bool wasCrouching = crouching;
+        bool wasSprinting = sprinting;
+
+        crouching = crouchInput;
+        sprinting = sprintInput;
+
+        //Are crouching, don't sprint
+        if (wasCrouching)
+        {
+            sprinting = false;
+        }
+
+        //Are sprinting, crouching means sliding now
+        if (wasSprinting && slidingRoutine == null)
+        {
+            if (crouching && grounded)
+            {
+                slidingRoutine = StartCoroutine(SlideCountDown());
+            }
+        }
+
+        if (sprinting || sliding)
+            crouching = false;
+
+        //Temporary feedback
+        if (crouching)
+        {
+            visuals.transform.localPosition = new Vector3(0, -0.5f, 0);
+            visuals.transform.localScale = new Vector3(1, 0.5f, 1);
+        }
+        else
+        {
+            visuals.transform.localPosition = new Vector3(0, 0, 0);
+            visuals.transform.localScale = new Vector3(1, 1, 1);
+        }
+
+        //Disable jumping when crouching
+        if (crouching)
+            canJump = false;
+    }
+
     private void FixedUpdate()
     {
+        ProcessInput();
+
         float speed = walkSpeed;
-        if (sprintInput) speed *= runModifier;
-        if (sneakInput) speed *= sneakModifier;
+        if (sprinting) speed *= runModifier;
+        if (crouching) speed *= sneakModifier;
 
         //Apply gravity
         if (useGravity)
             rb.AddForce(gravity, ForceMode.Acceleration);
-        if (!canMove) return;
+
+        if (!canMove && !sliding) return;
+
         //Run
         float slow = 1;
         slow *= pulling ? pullingSlow : 1;
@@ -178,5 +191,33 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + Vector3.up * 0.1f, transform.position + Vector3.up * 0.1f + Vector3.down*1.2f);
         Gizmos.color = Color.white;
+    }
+
+    private IEnumerator SlideCountDown()
+    {
+        Vector3 euler = new Vector3(-90, 0, 0);
+        visuals.transform.localRotation = Quaternion.Euler(euler);
+
+        canMove = false;
+        sliding = true;
+
+        RigidbodyConstraints constraints = rb.constraints;
+
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        yield return new WaitForSeconds(slideTime);
+
+        canMove = true;
+        sliding = false;
+        crouching = true;
+        sprinting = false;
+        euler = Vector3.zero;
+        visuals.transform.localRotation = Quaternion.Euler(euler);
+        Vector3 pos = transform.localPosition;
+        pos.y += 0.5f;
+        transform.localPosition = pos;
+        slidingRoutine = null;
+
+        rb.constraints = constraints;
     }
 }

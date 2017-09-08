@@ -11,7 +11,7 @@ public class RotatePad : CollisionInteractable
         if (interacting.CompareTag("Player"))
         {
             //VERY MUCH TEMPORARY
-            interacting.transform.Translate(0, 2, 0);
+            interacting.transform.parent.parent.Translate(0, (transform.up*3).y, 0);
             WorldRotateController.instance.RotateWorld(amount);
         }
     }
