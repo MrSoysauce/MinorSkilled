@@ -18,6 +18,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float runModifier = 2;
     [SerializeField] private float sneakModifier = 0.5f;
 
+    [SerializeField] private float crouchDetectionDistance = 0.5f;
+    [SerializeField] private float climbDistance = 1f;
+    [SerializeField] private float climbSpeed = 5;
+
+    [SerializeField] private LayerMask climbLayer;
+
     [Header("Temp feedback")]
     [SerializeField] private GameObject visuals;
 
@@ -38,16 +44,16 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool jumpInput;
     [ReadOnly] public bool sprintInput;
     [ReadOnly] public bool crouchInput;
+    [ReadOnly] public bool climbInput;
     [ReadOnly] public bool isMoving;
-
     private Vector3 forward;
     private Camera playerCamera;
 
     [Header("Movement variables")]
     [ReadOnly] public bool crouching;
     [ReadOnly] public bool sprinting;
-
     [ReadOnly] public bool sliding;
+    [ReadOnly] public bool climbing;
 
     private Coroutine slidingRoutine = null;
 
@@ -91,6 +97,7 @@ public class PlayerController : MonoBehaviour
         isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
         jumpInput = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0);
+        climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f;
         grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3);
 
         sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Joystick1Button2);
@@ -136,8 +143,31 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (!sliding)
+        {
+            //Force crouching if under object
+            if (Physics.Raycast(transform.position, transform.up, crouchDetectionDistance))
+            {
+                crouching = true;
+                sliding = false;
+                sprinting = false;
+            }
+        }
+
+        //Can't crouch while sprinting or sliding
         if (sprinting || sliding)
             crouching = false;
+
+        //Climbing (can't climb while sliding)
+        climbing = false;
+        if (climbInput && !sliding && Physics.Raycast(transform.position, transform.forward, climbDistance, climbLayer))
+        {
+            sprinting = false;
+            canJump = false;
+            crouching = false;
+
+            climbing = true;
+        }
 
         //Temporary feedback
         if (crouching)
@@ -151,8 +181,8 @@ public class PlayerController : MonoBehaviour
             visuals.transform.localScale = new Vector3(1, 1, 1);
         }
 
-        //Disable jumping when crouching
-        if (crouching)
+        //Disable jumping when crouching or sliding
+        if (crouching || sliding)
             canJump = false;
     }
 
@@ -163,9 +193,10 @@ public class PlayerController : MonoBehaviour
         float speed = walkSpeed;
         if (sprinting) speed *= runModifier;
         if (crouching) speed *= sneakModifier;
+        if (climbing) speed = 0;
 
         //Apply gravity
-        if (useGravity)
+        if (useGravity && !climbing)
             rb.AddForce(gravity, ForceMode.Acceleration);
 
         if (!canMove && !sliding) return;
@@ -180,6 +211,11 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(0, jumpStrength * 100, 0);
             canJump = false;
+        }
+
+        if (climbing)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, climbSpeed, rb.velocity.y);
         }
 
         //Apply drag

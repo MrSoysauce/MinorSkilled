@@ -247,6 +247,12 @@ MonoBehaviour:
   slideTime: 0.5
   runModifier: 2
   sneakModifier: 0.6
+  crouchDetectionDistance: 0.5
+  climbDistance: 1
+  climbSpeed: 8
+  climbLayer:
+    serializedVersion: 2
+    m_Bits: 256
   visuals: {fileID: 1437968864215724}
   verticalInput: 0
   horizontalInput: 0
@@ -259,10 +265,12 @@ MonoBehaviour:
   jumpInput: 0
   sprintInput: 0
   crouchInput: 0
+  climbInput: 0
   isMoving: 0
   crouching: 0
   sprinting: 0
   sliding: 0
+  climbing: 0
 --- !u!114 &114828160176823498
 MonoBehaviour:
   m_ObjectHideFlags: 1

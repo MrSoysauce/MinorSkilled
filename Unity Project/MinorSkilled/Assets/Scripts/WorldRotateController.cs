@@ -89,7 +89,7 @@ public class WorldRotateController : MonoBehaviour
         }
         //Confirm rotation
         transform.rotation = rot;
-        transform.Rotate(90, 0, 0);
+        transform.Rotate((float)amount, 0, 0);
 
         UnFreezeObjects();
 
