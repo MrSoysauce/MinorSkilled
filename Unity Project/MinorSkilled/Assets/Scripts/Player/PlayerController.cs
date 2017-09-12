@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
 
         if (!climbing && !sliding)
         {
-            if (grabInput)
+            if (grabInput && pickedObject == null)
             {
                 sprinting = false;
                 climbing = false;
