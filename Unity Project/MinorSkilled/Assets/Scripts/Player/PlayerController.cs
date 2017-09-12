@@ -17,12 +17,17 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float runModifier = 2;
     [SerializeField] private float sneakModifier = 0.5f;
+    [SerializeField] private float grabModifier = 0.5f;
 
     [SerializeField] private float crouchDetectionDistance = 0.5f;
     [SerializeField] private float climbDistance = 1f;
     [SerializeField] private float climbSpeed = 5;
 
     [SerializeField] private LayerMask climbLayer;
+
+    [SerializeField] private Collider grabbingCollider;
+    [SerializeField] private float grabDistance = 2f;
+    [SerializeField] private float throwForce = 5f;
 
     [Header("Temp feedback")]
     [SerializeField] private GameObject visuals;
@@ -54,8 +59,10 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool sprinting;
     [ReadOnly] public bool sliding;
     [ReadOnly] public bool climbing;
+    [ReadOnly] public bool grabbing;
 
     private Coroutine slidingRoutine = null;
+    private Grabable pickedObject = null;
 
     private void Start ()
     {
@@ -96,12 +103,12 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
-        jumpInput = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0);
-        climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f;
-        grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3);
+        jumpInput = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0); //Space or A
+        climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f; //Left ctrl or trigger
+        grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3); //J or Y
 
-        sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Joystick1Button2);
-        crouchInput = Input.GetKey(KeyCode.K) || Input.GetAxis("XboxAxis9") > 0.5f;
+        sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Joystick1Button2); //Left shift or X
+        crouchInput = Input.GetKey(KeyCode.K) || Input.GetAxis("XboxAxis9") > 0.5f; //K or trigger
     }
 
     private void Turn()
@@ -169,6 +176,46 @@ public class PlayerController : MonoBehaviour
             climbing = true;
         }
 
+        if (!climbing && !sliding)
+        {
+            if (grabInput)
+            {
+                sprinting = false;
+                climbing = false;
+                sliding = false;
+                canJump = false;
+
+                grabbing = true;
+
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, grabDistance))
+                {
+                    Grabable grab = hit.transform.GetComponent<Grabable>();
+                    if (grab)
+                    {
+                        pickedObject = grab;
+                        grab.Grab();
+                        hit.transform.SetParent(transform);
+                        hit.transform.localPosition = new Vector3(0, 2.5f, 0);
+                    }
+                }
+            }
+        }
+
+        if (grabbing && !grabInput)
+        {
+            if (pickedObject != null)
+            {
+                pickedObject.UnGrab();
+                pickedObject.GetComponent<Rigidbody>().AddForce(rb.velocity * pickedObject.GetComponent<Rigidbody>().mass * throwForce);
+                pickedObject.transform.SetParent(null);
+                pickedObject = null;
+            }
+            grabbing = false;
+        }
+
+        grabbingCollider.enabled = grabbing;
+
         //Temporary feedback
         if (crouching)
         {
@@ -193,6 +240,7 @@ public class PlayerController : MonoBehaviour
         float speed = walkSpeed;
         if (sprinting) speed *= runModifier;
         if (crouching) speed *= sneakModifier;
+        if (grabbing) speed *= grabModifier;
         if (climbing) speed = 0;
 
         //Apply gravity

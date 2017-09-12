@@ -52,13 +52,22 @@ public class WaypointPatrol : AnimatorAIBase
             }
         }
 
+        Matrix4x4 mat = agent.GetComponent<AnimatorAIHelper>().wayPointTransform.localToWorldMatrix;
+
         //Get new waypoint
+        int i = 0;
         Vector3 newDestination;
         if (wp.ordered)
-            newDestination = waypointsToGo[0];
+        {
+            newDestination = mat.MultiplyVector(waypointsToGo[0]);
+            i = 0;
+        }
         else
-            newDestination = waypointsToGo[Random.Range(0, waypointsToGo.Count)];
-        waypointsToGo.Remove(newDestination);
+        {
+            i = Random.Range(0, waypointsToGo.Count);
+            newDestination = mat.MultiplyVector(waypointsToGo[i]);
+        }
+        waypointsToGo.RemoveAt(i);
 
         //Find point on NavMesh which is the closest to our random point
         NavMeshHit hit;
