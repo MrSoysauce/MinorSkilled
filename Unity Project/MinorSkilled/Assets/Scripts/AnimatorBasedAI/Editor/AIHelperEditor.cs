@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(Waypoints))]
-public class WaypointEditor : Editor
+[CustomEditor(typeof(AnimatorAIHelper))]
+public class AIHelperEditor : Editor
 {
     private static void CreateAsset<T>(string path) where T : ScriptableObject
     {
@@ -28,36 +26,39 @@ public class WaypointEditor : Editor
         CreateAsset<Waypoints>(path);
     }
 
-    public override void OnInspectorGUI()
+    private void OnSceneGUI()
     {
-        base.OnInspectorGUI();
+        Waypoints o = null;
 
-        SceneView.onSceneGUIDelegate = OnScene;
-    }
+        AnimatorAIHelper helper = (AnimatorAIHelper)target;
+        if (helper.waypoints != null)
+        {
+            for (int i = 0; i < helper.waypoints.Count; i++)
+            {
+                Waypoints wp = helper.waypoints[i];
+                if (wp != null && i == helper.editID)
+                    o = wp;
+            }
+        }
 
-    private static void OnScene(SceneView sceneview)
-    {
-        Waypoints o = Selection.activeObject as Waypoints;
         if (o == null)
             return;
-
-        if (o.waypoints == null)
-            o.waypoints = new List<Vector3>();
 
         for (int i = 0; i < o.waypoints.Count; i++)
         {
             Vector3 wp = o.waypoints[i];
 
             EditorGUI.BeginChangeCheck();
-            Vector3 newTargetPosition = Handles.PositionHandle(wp, Quaternion.identity);
+            Matrix4x4 mat = helper.wayPointTransform.localToWorldMatrix;
+
+            Vector3 newTargetPosition = Handles.PositionHandle(mat.MultiplyVector(wp), Quaternion.identity);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(o, "Change Waypoint pos");
-                o.waypoints[i] = newTargetPosition;
+                o.waypoints[i] = (mat.inverse.MultiplyVector(newTargetPosition));
                 EditorUtility.SetDirty(o);
             }
 
-            Color c = Handles.color;
             if (o.ordered)
             {
                 if (i == 0)
@@ -66,18 +67,18 @@ public class WaypointEditor : Editor
                     Handles.color = Color.red;
 
                 if (i != 0)
-                    Debug.DrawLine(o.waypoints[i - 1], o.waypoints[i]);
+                    Debug.DrawLine((mat.MultiplyVector(o.waypoints[i-1])), mat.MultiplyVector(o.waypoints[i]));
 
-                if (i == 0 || i == o.waypoints.Count-1)
-                {   
-                    Handles.FreeMoveHandle(o.waypoints[i], Quaternion.identity,
-                        HandleUtility.GetHandleSize(o.waypoints[i])/10, Vector3.zero, Handles.SphereHandleCap);
+                if (i == 0 || i == o.waypoints.Count - 1)
+                {
+                    Handles.FreeMoveHandle(mat.MultiplyVector(o.waypoints[i]), Quaternion.identity,
+                        HandleUtility.GetHandleSize(mat.MultiplyVector(o.waypoints[i])) / 10, Vector3.zero, Handles.SphereHandleCap);
                 }
 
                 if (o.loop)
                 {
                     if (i == o.waypoints.Count - 1)
-                        Debug.DrawLine(o.waypoints[i], o.waypoints[0], Color.red);
+                        Debug.DrawLine(mat.MultiplyVector(o.waypoints[i]), mat.MultiplyVector(o.waypoints[0]), Color.red);
                 }
             }
         }

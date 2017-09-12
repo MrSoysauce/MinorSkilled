@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(Animator))]
 public class AnimatorAIHelper : MonoBehaviour
 {
+    [SerializeField] public List<Waypoints> waypoints;
+    [SerializeField] public int editID;
+    [SerializeField] public Transform wayPointTransform;
+
     [SerializeField] private NavMeshAgent agent;
     private Animator animator;
 

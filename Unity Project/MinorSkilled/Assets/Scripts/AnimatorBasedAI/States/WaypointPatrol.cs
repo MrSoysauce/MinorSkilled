@@ -5,16 +5,18 @@ using UnityEngine.AI;
 
 public class WaypointPatrol : AnimatorAIBase
 {
-    [SerializeField] private Waypoints waypoints;
+    [SerializeField] private int waypointID;
     private List<Vector3> waypointsToGo;
-
     [SerializeField] private float finishRange = 1;
-
     [HideInInspector] public bool finishedPatrolling = false;
+
+    private Waypoints wp;
 
     protected override void OnStart(Animator anim, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        waypointsToGo = new List<Vector3>(waypoints.waypoints);
+        AnimatorAIHelper helper = anim.GetComponent<AnimatorAIHelper>();
+        wp = helper.waypoints[waypointID];
+        waypointsToGo = new List<Vector3>(wp.waypoints);
         finishedPatrolling = false;
     }
 
@@ -39,8 +41,8 @@ public class WaypointPatrol : AnimatorAIBase
         if (waypointsToGo.Count == 0)
         {
             //Restart
-            if (waypoints.loop)
-                waypointsToGo = new List<Vector3>(waypoints.waypoints);
+            if (wp.loop)
+                waypointsToGo = new List<Vector3>(wp.waypoints);
             //Stop moving
             else
             {
@@ -52,7 +54,7 @@ public class WaypointPatrol : AnimatorAIBase
 
         //Get new waypoint
         Vector3 newDestination;
-        if (waypoints.ordered)
+        if (wp.ordered)
             newDestination = waypointsToGo[0];
         else
             newDestination = waypointsToGo[Random.Range(0, waypointsToGo.Count)];

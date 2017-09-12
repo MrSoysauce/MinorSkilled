@@ -35,7 +35,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   agentDefaultSpeed: 0
   agentDefaultAngularSpeed: 0
-  waypoints: {fileID: 11400000, guid: 8a36ccb85670d8840b78023b758cb5e7, type: 2}
+  waypointID: 0
   finishRange: 1
   finishedPatrolling: 0
 --- !u!1102 &1102917056656953562
@@ -72,7 +72,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102917056656953562}
-    m_Position: {x: 312, y: 120, z: 0}
+    m_Position: {x: 324, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
