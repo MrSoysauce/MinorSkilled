@@ -69,12 +69,7 @@ public class WaypointPatrol : AnimatorAIBase
         }
         waypointsToGo.RemoveAt(i);
 
-        //Find point on NavMesh which is the closest to our random point
-        NavMeshHit hit;
-        NavMesh.SamplePosition(newDestination, out hit, float.PositiveInfinity, 1);
-        Vector3 finalPosition = hit.position;
-
         //Set new destination
-        agent.destination = finalPosition;
+        agent.destination = newDestination;
     }
 }
