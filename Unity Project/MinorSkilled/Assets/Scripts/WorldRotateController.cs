@@ -1,19 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum RotateAmount
+public enum RotateAxis
 {
-    Deg90Plus = 90,
-    Deg90Min = -90,
-    Deg180Plus = 180,
-    Deg180Min = -180
+    X,
+    Y,
+    Z
 }
 
 public class WorldRotateController : MonoBehaviour
 {
-    public static WorldRotateController instance;
-
     [SerializeField] private float rotateSpeed;
 
     [SerializeField] private List<Rigidbody> freezeBodies;
@@ -23,20 +21,15 @@ public class WorldRotateController : MonoBehaviour
 
     private Coroutine coroutine;
 
-    private void Awake()
-    {
-        instance = this;
-    }
-
     private void Start()
     {
         groups = GetComponentsInChildren<PhysicsGroup>();
     }
 
-    public void RotateWorld(RotateAmount amount)
+    public void RotateWorld(RotateAxis rotateAxis, float rotateAmount)
     {
         if (coroutine == null)
-            coroutine = StartCoroutine(rotateWorld(amount));
+            coroutine = StartCoroutine(rotateWorld(rotateAxis, rotateAmount));
     }
 
     private void FreezeObjects()
@@ -72,24 +65,40 @@ public class WorldRotateController : MonoBehaviour
         }
     }
 
-    private IEnumerator rotateWorld(RotateAmount amount)
+    private IEnumerator rotateWorld(RotateAxis rotateAxis, float rotateAmount)
     {
         FreezeObjects();
 
         Quaternion rot = transform.rotation;
         float counter = 0;
-        int direction = (int)Mathf.Sign((int) amount);
+        int direction = (int)Mathf.Sign((int) rotateAmount);
 
         //Slowly rotate
-        while (counter < Mathf.Abs((float)amount))
+        while (counter < Mathf.Abs((float)rotateAmount))
         {
             counter += Time.deltaTime*rotateSpeed;
-            transform.Rotate(Time.deltaTime*rotateSpeed*direction, 0, 0);
+
+            float rotation = Time.deltaTime*rotateSpeed*direction;
+            Vector3 r = new Vector3();
+            switch (rotateAxis)
+            {
+                case RotateAxis.X:
+                    r.x = rotation;
+                    break;
+                case RotateAxis.Y:
+                    r.y = rotation;
+                    break;
+                case RotateAxis.Z:
+                    r.z = rotation;
+                    break;
+            }
+
+            transform.Rotate(r);
             yield return null;
         }
         //Confirm rotation
         transform.rotation = rot;
-        transform.Rotate((float)amount, 0, 0);
+        transform.Rotate((float)rotateAmount, 0, 0);
 
         UnFreezeObjects();
 
