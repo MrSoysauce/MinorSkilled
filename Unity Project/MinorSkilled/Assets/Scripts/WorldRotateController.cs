@@ -96,9 +96,23 @@ public class WorldRotateController : MonoBehaviour
             transform.Rotate(r);
             yield return null;
         }
+
         //Confirm rotation
         transform.rotation = rot;
-        transform.Rotate((float)rotateAmount, 0, 0);
+		Vector3 vecrot = new Vector3();
+		switch (rotateAxis)
+		{
+		case RotateAxis.X:
+			vecrot.x = rotateAmount;
+			break;
+		case RotateAxis.Y:
+			vecrot.y = rotateAmount;
+			break;
+		case RotateAxis.Z:
+			vecrot.z = rotateAmount;
+			break;
+		}
+		transform.Rotate(vecrot);
 
         UnFreezeObjects();
 
