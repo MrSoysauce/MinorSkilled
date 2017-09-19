@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
 
     private Coroutine slidingRoutine = null;
     private Grabable pickedObject = null;
+    private Transform pickedObjOldTransform = null;
 
     private void Start ()
     {
@@ -113,15 +114,17 @@ public class PlayerController : MonoBehaviour
 
     private void Turn()
     {
+        float v = climbing ? Mathf.Abs(verticalInput) + 1f : verticalInput;
+
         //Set forward direction
         if (playerCamera != null)
         {
             Vector3 horizontalMovement = horizontalInput * playerCamera.transform.right;
-            Vector3 verticalMovement = verticalInput * playerCamera.transform.forward;
+            Vector3 verticalMovement = v * playerCamera.transform.forward;
             forward = horizontalMovement + verticalMovement;
             forward = new Vector3(forward.x, 0, forward.z);
         }
-        else forward = new Vector3(verticalInput, 0, -horizontalInput).normalized;
+        else forward = new Vector3(v, 0, -horizontalInput).normalized;
 
         //Turn towards forward direction
         if (forward.magnitude > 0.001f && isMoving) transform.rotation = Quaternion.LookRotation(forward);
@@ -194,6 +197,7 @@ public class PlayerController : MonoBehaviour
                     if (grab)
                     {
                         pickedObject = grab;
+                        pickedObjOldTransform = hit.transform.parent;
                         grab.Grab();
                         hit.transform.SetParent(transform);
                         hit.transform.localPosition = new Vector3(0, 2.5f, 0);
@@ -208,7 +212,7 @@ public class PlayerController : MonoBehaviour
             {
                 pickedObject.UnGrab();
                 pickedObject.GetComponent<Rigidbody>().AddForce(rb.velocity * pickedObject.GetComponent<Rigidbody>().mass * throwForce);
-                pickedObject.transform.SetParent(null);
+                pickedObject.transform.SetParent(pickedObjOldTransform);
                 pickedObject = null;
             }
             grabbing = false;
@@ -263,7 +267,7 @@ public class PlayerController : MonoBehaviour
 
         if (climbing)
         {
-            rb.velocity = new Vector3(rb.velocity.x, climbSpeed, rb.velocity.y);
+            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * verticalInput, rb.velocity.z);
         }
 
         //Apply drag
