@@ -30,7 +30,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 127
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4021761982213988
 Transform:
@@ -109,7 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0f945285cbe80649892dce7d3fd0bdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: -90
+  rotateAxis: 0
+  rotateAmount: 0
+  rotateController: {fileID: 0}
 --- !u!114 &114846353745842752
 MonoBehaviour:
   m_ObjectHideFlags: 1
