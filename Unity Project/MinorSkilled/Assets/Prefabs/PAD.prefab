@@ -39,7 +39,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1819139891038314}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40, y: -5, z: -3}
+  m_LocalPosition: {x: 2, y: 0, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateAxis: 0
-  rotateAmount: 0
+  rotateAmount: 180
   rotateController: {fileID: 0}
 --- !u!114 &114846353745842752
 MonoBehaviour:
@@ -146,7 +146,7 @@ MonoBehaviour:
       offset: {x: 0, y: 0}
       rotation: 0
       justify: 0
-      localPivot: {x: 0, y: 0.034951687}
+      localPivot: {x: 0, y: -0.052271016}
       localSize: {x: 0, y: 0}
       anchor: 9
     _mat: {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
@@ -175,7 +175,7 @@ MonoBehaviour:
       offset: {x: 0, y: 0}
       rotation: 0
       justify: 0
-      localPivot: {x: -1, y: 0.034951687}
+      localPivot: {x: 0.6912947, y: -1}
       localSize: {x: 0, y: 0}
       anchor: 9
     _mat: {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
@@ -204,7 +204,7 @@ MonoBehaviour:
       offset: {x: 0, y: 0}
       rotation: 0
       justify: 0
-      localPivot: {x: 0, y: 0.034951687}
+      localPivot: {x: 0, y: -1.4348605}
       localSize: {x: 0, y: 0}
       anchor: 9
     _mat: {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
@@ -233,7 +233,7 @@ MonoBehaviour:
       offset: {x: 0, y: 0}
       rotation: 0
       justify: 0
-      localPivot: {x: 1, y: 0.034951687}
+      localPivot: {x: -0.6912947, y: -1}
       localSize: {x: 0, y: 0}
       anchor: 9
     _mat: {fileID: 2100000, guid: 55296d1b6ee54e14e8eb4648d4b448ee, type: 2}
@@ -281,45 +281,45 @@ MonoBehaviour:
   _vertices:
   - {x: -1, y: 0, z: 0}
   - {x: 1, y: 0, z: 0}
-  - {x: -1, y: 0.06990337, z: 0}
-  - {x: 1, y: 0.06990337, z: 0}
+  - {x: -0.9222661, y: 0.06990337, z: -0.077733874}
+  - {x: 0.9222661, y: 0.06990337, z: -0.077733874}
   - {x: 1, y: 0, z: 0}
   - {x: 1, y: 0, z: -2}
-  - {x: 1, y: 0.06990337, z: 0}
-  - {x: 1, y: 0.06990337, z: -2}
+  - {x: 0.9222661, y: 0.06990337, z: -0.077733874}
+  - {x: 0.9222661, y: 0.06990337, z: -1.9222661}
   - {x: 1, y: 0, z: -2}
   - {x: -1, y: 0, z: -2}
-  - {x: 1, y: 0.06990337, z: -2}
-  - {x: -1, y: 0.06990337, z: -2}
+  - {x: 0.9222661, y: 0.06990337, z: -1.9222661}
+  - {x: -0.9222661, y: 0.06990337, z: -1.9222661}
   - {x: -1, y: 0, z: -2}
   - {x: -1, y: 0, z: 0}
-  - {x: -1, y: 0.06990337, z: -2}
-  - {x: -1, y: 0.06990337, z: 0}
-  - {x: -1, y: 0.06990337, z: 0}
-  - {x: 1, y: 0.06990337, z: 0}
-  - {x: -1, y: 0.06990337, z: -2}
-  - {x: 1, y: 0.06990337, z: -2}
+  - {x: -0.9222661, y: 0.06990337, z: -1.9222661}
+  - {x: -0.9222661, y: 0.06990337, z: -0.077733874}
+  - {x: -0.9222661, y: 0.06990337, z: -0.077733874}
+  - {x: 0.9222661, y: 0.06990337, z: -0.077733874}
+  - {x: -0.9222661, y: 0.06990337, z: -1.9222661}
+  - {x: 0.9222661, y: 0.06990337, z: -1.9222661}
   _uv:
-  - {x: 1, y: 0}
-  - {x: -1, y: 0}
-  - {x: 1, y: 0.06990337}
-  - {x: -1, y: 0.06990337}
-  - {x: 0, y: 0}
-  - {x: -2, y: 0}
-  - {x: 0, y: 0.06990337}
-  - {x: -2, y: 0.06990337}
-  - {x: 1, y: 0}
-  - {x: -1, y: 0}
-  - {x: 1, y: 0.06990337}
-  - {x: -1, y: 0.06990337}
-  - {x: 2, y: 0}
-  - {x: 0, y: 0}
-  - {x: 2, y: 0.06990337}
-  - {x: 0, y: 0.06990337}
   - {x: -1, y: 0}
   - {x: 1, y: 0}
-  - {x: -1, y: -2}
-  - {x: 1, y: -2}
+  - {x: -0.9222661, y: -0.10454203}
+  - {x: 0.9222661, y: -0.10454203}
+  - {x: 0.74356574, y: 0}
+  - {x: 0.74356574, y: -2}
+  - {x: 0.6390237, y: -0.077733874}
+  - {x: 0.6390237, y: -1.9222661}
+  - {x: 1, y: -1.4871315}
+  - {x: -1, y: -1.4871315}
+  - {x: 0.9222661, y: -1.3825895}
+  - {x: -0.9222661, y: -1.3825895}
+  - {x: -0.74356574, y: -2}
+  - {x: -0.74356574, y: 0}
+  - {x: -0.6390237, y: -1.9222661}
+  - {x: -0.6390237, y: -0.077733874}
+  - {x: -0.9222661, y: -0.077733874}
+  - {x: 0.9222661, y: -0.077733874}
+  - {x: -0.9222661, y: -1.9222661}
+  - {x: 0.9222661, y: -1.9222661}
   _uv3: []
   _uv4: []
   _tangents: []
@@ -354,9 +354,17 @@ MonoBehaviour:
     areaError: 15
   asset_guid: 
   dontDestroyMeshOnDelete: 0
-  m_selectedFaces: 
-  m_SelectedEdges: []
-  m_selectedTriangles: 
+  m_selectedFaces: 04000000
+  m_SelectedEdges:
+  - x: 16
+    y: 17
+  - x: 18
+    y: 16
+  - x: 17
+    y: 19
+  - x: 19
+    y: 18
+  m_selectedTriangles: 100000001100000012000000110000001300000012000000
 --- !u!114 &114996003858963402
 MonoBehaviour:
   m_ObjectHideFlags: 1
