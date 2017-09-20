@@ -101,6 +101,8 @@ public class PlayerInteractions : MonoBehaviour
         PlayerPrefs.SetFloat("CheckpointPosY", transform.position.y);
         PlayerPrefs.SetFloat("CheckpointPosZ", transform.position.z);
         PlayerPrefs.Save();
+
+		spawnPos = transform.position;
     }
 
     public void RespawnPlayer()
