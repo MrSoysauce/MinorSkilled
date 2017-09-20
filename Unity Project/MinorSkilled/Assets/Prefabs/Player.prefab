@@ -130,7 +130,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1324105980057080}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.858, z: 0}
+  m_LocalPosition: {x: 0, y: 2.09, z: 0}
   m_LocalScale: {x: 1.3078122, y: 1.3696071, z: 1.2528416}
   m_Children: []
   m_Father: {fileID: 4257820971055454}
@@ -291,13 +291,16 @@ MonoBehaviour:
   sneakModifier: 0.6
   grabModifier: 0.5
   crouchDetectionDistance: 0.5
+  crouchDetectLayer:
+    serializedVersion: 2
+    m_Bits: 4294966271
   climbDistance: 1
   climbSpeed: 8
   climbLayer:
     serializedVersion: 2
     m_Bits: 256
   grabbingCollider: {fileID: 65495023383917152}
-  grabDistance: 2
+  grabDistance: 0.25
   throwForce: 250
   visuals: {fileID: 1437968864215724}
   verticalInput: 0

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor.AI;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float grabModifier = 0.5f;
 
     [SerializeField] private float crouchDetectionDistance = 0.5f;
+    [SerializeField] private LayerMask crouchDetectLayer;
     [SerializeField] private float climbDistance = 1f;
     [SerializeField] private float climbSpeed = 5;
 
@@ -63,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     private Coroutine slidingRoutine = null;
     private Grabable pickedObject = null;
-    private Transform pickedObjOldTransform = null;
+    private Transform pickedObjOldParent = null;
 
     private void Start ()
     {
@@ -126,6 +128,12 @@ public class PlayerController : MonoBehaviour
         }
         else forward = new Vector3(v, 0, -horizontalInput).normalized;
 
+        Vector3 f = transform.TransformDirection(new Vector3(0, 0, 1));
+
+        //Don't turn if grabbing obj
+        if (pickedObject != null && grabbing && !pickedObject.liftable)
+            return;
+
         //Turn towards forward direction
         if (forward.magnitude > 0.001f && isMoving) transform.rotation = Quaternion.LookRotation(forward);
     }
@@ -156,7 +164,7 @@ public class PlayerController : MonoBehaviour
         if (!sliding)
         {
             //Force crouching if under object
-            if (Physics.Raycast(transform.position, transform.up, crouchDetectionDistance))
+            if (Physics.Raycast(transform.position, transform.up, crouchDetectionDistance, crouchDetectLayer))
             {
                 crouching = true;
                 sliding = false;
@@ -191,16 +199,32 @@ public class PlayerController : MonoBehaviour
                 grabbing = true;
 
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit, grabDistance))
+                if (Physics.Raycast(transform.position - transform.forward/10, transform.forward, out hit, grabDistance))
                 {
                     Grabable grab = hit.transform.GetComponent<Grabable>();
                     if (grab)
                     {
                         pickedObject = grab;
-                        pickedObjOldTransform = hit.transform.parent;
+                        pickedObjOldParent = hit.transform.parent;
+
+                        if (!grab.liftable)
+                        {
+                            Quaternion q = Quaternion.LookRotation(grab.transform.position - transform.position, Vector3.up);
+                            transform.rotation = Quaternion.Euler(0, q.eulerAngles.y, 0);
+                        }
+
                         grab.Grab();
-                        hit.transform.SetParent(transform);
-                        hit.transform.localPosition = new Vector3(0, 2.5f, 0);
+
+                        Debug.Log(grab.liftable);
+                        if (grab.liftable)
+                        {
+                            hit.transform.localPosition = new Vector3(0, 2.5f, 0);
+                            hit.transform.SetParent(transform);
+                        }
+                        else
+                        {
+                            hit.transform.SetParent(transform, true);
+                        }   
                     }
                 }
             }
@@ -211,14 +235,17 @@ public class PlayerController : MonoBehaviour
             if (pickedObject != null)
             {
                 pickedObject.UnGrab();
-                pickedObject.GetComponent<Rigidbody>().AddForce(rb.velocity * pickedObject.GetComponent<Rigidbody>().mass * throwForce);
-                pickedObject.transform.SetParent(pickedObjOldTransform);
+
+                //Throw liftables
+                if (pickedObject.liftable)
+                    pickedObject.GetComponent<Rigidbody>().AddForce(rb.velocity * pickedObject.GetComponent<Rigidbody>().mass * throwForce);
+                pickedObject.transform.SetParent(pickedObjOldParent);
                 pickedObject = null;
             }
             grabbing = false;
         }
 
-        grabbingCollider.enabled = grabbing;
+        grabbingCollider.enabled = grabbing && (pickedObject != null && pickedObject.liftable);
 
         //Temporary feedback
         if (crouching)

@@ -8,6 +8,8 @@ public class Grabable : RaycastInteractable
     private Collider col;
     private bool grabbed;
 
+    public bool liftable = true;
+
     private void Start()
     {
         col = GetComponent<Collider>();
@@ -24,7 +26,10 @@ public class Grabable : RaycastInteractable
     private void Update()
     {
         if (grabbed && transform.parent.CompareTag("Player"))
-            transform.localPosition = new Vector3(0, 2.5f, 0);
+        {
+            if (liftable)
+                transform.localPosition = new Vector3(0, 2.5f, 0);
+        }
     }
 
     public void UnGrab()

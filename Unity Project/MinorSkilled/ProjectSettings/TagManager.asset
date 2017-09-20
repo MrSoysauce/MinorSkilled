@@ -15,7 +15,7 @@ TagManager:
   - 
   - Climbable
   - ExcludedFromNavMesh
-  - 
+  - DoesNotAffectCrouch
   - 
   - 
   - 
