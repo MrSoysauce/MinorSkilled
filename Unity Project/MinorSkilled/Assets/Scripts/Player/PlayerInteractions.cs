@@ -167,7 +167,17 @@ public class PlayerInteractions : MonoBehaviour
         foreach (ContactPoint cp in c.contacts)
         {
             if (cp.thisCollider == flyingEnemyCollider)
+            {
                 DetachEnemy();
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider c)
+    {
+        if (c.CompareTag("EnemyKillingFog"))
+        {
+            DetachEnemy();
         }
     }
 }

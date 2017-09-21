@@ -45,7 +45,11 @@ public class Enemy1 : AnimatorAIHelper
             if (requiresVision)
             {
                 RaycastHit hit;
-                canSee = Physics.Raycast(transform.position, player.position - transform.position, out hit, radius);
+                if (Physics.Raycast(visuals.transform.position, player.position - visuals.transform.position, out hit, radius))
+                {
+                    if (hit.transform.CompareTag("Player"))
+                        canSee = true;
+                }
             }
             else
             {
