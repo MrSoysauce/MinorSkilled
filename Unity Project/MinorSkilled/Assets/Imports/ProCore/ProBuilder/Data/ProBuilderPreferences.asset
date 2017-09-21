@@ -30,10 +30,10 @@ MonoBehaviour:
   m_Color_keys: []
   m_Material_keys: []
   m_Bool_values: 00010101
-  m_Int_values: 0000000001000000020000000000000000000000
+  m_Int_values: 0000000000000000020000000000000000000000
   m_Float_values:
   - 0
-  - 60
+  - 0
   m_String_values:
   - RGBA(0.441, 0.283, 0.000, 1.000)
   m_Color_values: []
