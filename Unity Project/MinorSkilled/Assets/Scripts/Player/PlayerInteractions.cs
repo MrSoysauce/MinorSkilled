@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -12,11 +13,15 @@ public class PlayerInteractions : MonoBehaviour
     private NPCInteractable npc;
     private PlayerController player;
 
+    [SerializeField] private Collider flyingEnemyCollider;
     [SerializeField] private GameObject interactMessage;
 
     private RotatePad rotatePad;
 
     private Vector3 spawnPos;
+
+    private Enemy2 attachedEnemy = null;
+    private Transform oldEnemyParent;
 
     private void Start()
     {
@@ -41,6 +46,8 @@ public class PlayerInteractions : MonoBehaviour
             spawnPos.z = PlayerPrefs.GetFloat("CheckpointPosZ");
             transform.position = spawnPos;
         }
+
+        flyingEnemyCollider.enabled = false;
     }
 
     /// <summary>
@@ -108,6 +115,60 @@ public class PlayerInteractions : MonoBehaviour
     public void RespawnPlayer()
     {
         transform.position = spawnPos;
+    }
+
+    public bool AttachEnemy(Enemy2 enemy)
+    {
+        if (attachedEnemy != null)
+            return false;
+
+        oldEnemyParent = enemy.transform.parent;
+
+        enemy.transform.SetParent(transform);
+        enemy.transform.localPosition = new Vector3(0, 0, 0);
+        enemy.visuals.transform.localPosition = new Vector3(0, 1.5f, 0);
+        enemy.GetComponent<NavMeshAgent>().enabled = false;
+        
+        attachedEnemy = enemy;
+
+        flyingEnemyCollider.enabled = true;
+
+        //Apply speed changes
+        float modSpeed = 1;
+        if (enemy.invertControls)
+            modSpeed *= -1;
+        modSpeed *= enemy.slow;
+        player.scriptableSpeedModifier = modSpeed;
+        player.forceMovement = enemy.forceMovement;
+        return true;
+    }
+
+    public void DetachEnemy()
+    {
+        if (attachedEnemy == null)
+            return;
+
+        attachedEnemy.attached = false;
+        attachedEnemy.transform.SetParent(oldEnemyParent, true);
+        oldEnemyParent = null;
+
+        flyingEnemyCollider.enabled = false;
+
+        Destroy(attachedEnemy.gameObject);
+        attachedEnemy = null;
+
+        //Undo speed changes
+        player.scriptableSpeedModifier = 1;
+        player.forceMovement = false;
+    }
+
+    private void OnCollisionEnter(Collision c)
+    {
+        foreach (ContactPoint cp in c.contacts)
+        {
+            if (cp.thisCollider == flyingEnemyCollider)
+                DetachEnemy();
+        }
     }
 }
 

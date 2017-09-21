@@ -26,7 +26,7 @@ public class AIHelperEditor : Editor
         CreateAsset<Waypoints>(path);
     }
 
-    private void OnSceneGUI()
+    protected virtual void OnSceneGUI()
     {
         Waypoints o = null;
 
@@ -82,5 +82,14 @@ public class AIHelperEditor : Editor
                 }
             }
         }
+    }
+}
+
+[CustomEditor(typeof(Enemy1))]
+public class Enemy1Editor : AIHelperEditor
+{
+    protected override void OnSceneGUI()
+    {
+        base.OnSceneGUI();
     }
 }

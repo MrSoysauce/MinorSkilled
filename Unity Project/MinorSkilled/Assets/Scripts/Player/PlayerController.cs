@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEditor.AI;
@@ -27,7 +28,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask climbLayer;
 
-    [SerializeField] private Collider grabbingCollider;
     [SerializeField] private float grabDistance = 2f;
     [SerializeField] private float throwForce = 5f;
 
@@ -62,6 +62,10 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool sliding;
     [ReadOnly] public bool climbing;
     [ReadOnly] public bool grabbing;
+
+    [HideInInspector] public float scriptableSpeedModifier = 1;
+    [HideInInspector] public bool forceMovement;
+    private float oldInputX, oldInputY;
 
     private Coroutine slidingRoutine = null;
     private Grabable pickedObject = null;
@@ -117,16 +121,38 @@ public class PlayerController : MonoBehaviour
     private void Turn()
     {
         float v = climbing ? Mathf.Abs(verticalInput) + 1f : verticalInput;
+        float h = horizontalInput;
+
+        if (forceMovement)
+        {
+            if (Math.Abs(oldInputX) < float.Epsilon && Math.Abs(oldInputY) < float.Epsilon)
+                oldInputY = 1;
+
+            //Round to 1 or -1
+            Vector2 movement = new Vector2(h, v);
+            movement.Normalize();
+            h = movement.x;
+            v = movement.y;
+
+            if (Math.Abs(v) < float.Epsilon || Math.Abs(h) < float.Epsilon)
+            {
+                v = oldInputY;
+                h = oldInputX;
+            }
+
+            oldInputY = v;
+            oldInputX = h;
+        }
 
         //Set forward direction
         if (playerCamera != null)
         {
-            Vector3 horizontalMovement = horizontalInput * playerCamera.transform.right;
+            Vector3 horizontalMovement = h * playerCamera.transform.right;
             Vector3 verticalMovement = v * playerCamera.transform.forward;
             forward = horizontalMovement + verticalMovement;
             forward = new Vector3(forward.x, 0, forward.z);
         }
-        else forward = new Vector3(v, 0, -horizontalInput).normalized;
+        else forward = new Vector3(v, 0, -h).normalized;
 
         Vector3 f = transform.TransformDirection(new Vector3(0, 0, 1));
 
@@ -245,8 +271,6 @@ public class PlayerController : MonoBehaviour
             grabbing = false;
         }
 
-        grabbingCollider.enabled = grabbing && (pickedObject != null && pickedObject.liftable);
-
         //Temporary feedback
         if (crouching)
         {
@@ -273,6 +297,7 @@ public class PlayerController : MonoBehaviour
         if (crouching) speed *= sneakModifier;
         if (grabbing) speed *= grabModifier;
         if (climbing) speed = 0;
+        speed *= scriptableSpeedModifier;
 
         //Apply gravity
         if (useGravity && !climbing)

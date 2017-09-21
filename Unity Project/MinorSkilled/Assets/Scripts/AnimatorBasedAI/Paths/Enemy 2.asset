@@ -9,13 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7c8f529d27cfc479e75887ef10f565, type: 3}
-  m_Name: Path Test 1
+  m_Name: Enemy 2
   m_EditorClassIdentifier: 
   loop: 1
   ordered: 1
   waypoints:
-  - {x: -0.41117692, y: -3.499734, z: 2.2608292}
-  - {x: -6.4820805, y: -3.4824553, z: 2.2807403}
-  - {x: -6.4779434, y: -3.4932165, z: -1.1173568}
-  - {x: -6.4754105, y: -3.4564018, z: -5.0359106}
-  - {x: -0.20428514, y: -3.499978, z: -5.0366535}
+  - {x: 0.29162693, y: -3.15057, z: -5.2102537}
+  - {x: -31.728054, y: -3.4824553, z: -4.900305}

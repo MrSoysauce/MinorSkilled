@@ -18,6 +18,8 @@ public class WaypointPatrol : AnimatorAIBase
         wp = helper.waypoints[waypointID];
         waypointsToGo = new List<Vector3>(wp.waypoints);
         finishedPatrolling = false;
+
+        Patrol(false);
     }
 
     protected override void OnUpdate(Animator anim, AnimatorStateInfo stateInfo, int layerIndex)
@@ -30,12 +32,18 @@ public class WaypointPatrol : AnimatorAIBase
         finishedPatrolling = false;
     }
 
-    private void Patrol()
+    private void Patrol(bool checkForDistance = true)
     {
-        //Did we get to the waypoint yet?
-        bool finished = agent.remainingDistance < finishRange;
-        if (!finished)
+        if (!agent.isActiveAndEnabled)
             return;
+
+        //Did we get to the waypoint yet?
+        if (checkForDistance)
+        {
+            bool finished = agent.remainingDistance < finishRange;
+            if (!finished)
+                return;
+        }
 
         //Out of waypoints?
         if (waypointsToGo.Count == 0)

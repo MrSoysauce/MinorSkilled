@@ -10,9 +10,9 @@ public class AnimatorAIHelper : MonoBehaviour
     [SerializeField] public Transform wayPointTransform;
 
     [SerializeField] private NavMeshAgent agent;
-    private Animator animator;
+    protected Animator animator;
 
-    private void Start()
+    protected virtual void Start()
     {
         //Get animator
         animator = GetComponent<Animator>();
