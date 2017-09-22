@@ -93,3 +93,12 @@ public class Enemy1Editor : AIHelperEditor
         base.OnSceneGUI();
     }
 }
+
+[CustomEditor(typeof(Enemy2))]
+public class Enemy2Editor : Enemy1Editor
+{
+	protected override void OnSceneGUI()
+	{
+		base.OnSceneGUI();
+	}
+}

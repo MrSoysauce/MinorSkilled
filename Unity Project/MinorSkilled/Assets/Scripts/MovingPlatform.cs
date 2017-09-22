@@ -57,7 +57,7 @@ public class MovingPlatform : MonoBehaviour {
 	            if (nextWaypoint == waypoints.Count)
 	            {
                     nextWaypoint = 0;
-                    enabled = false;
+                    enabled = true;
 	            }
 	             SetDestination(waypoints[nextWaypoint]);
 	        }
