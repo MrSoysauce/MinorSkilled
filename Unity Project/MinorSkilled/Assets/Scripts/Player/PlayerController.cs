@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour
     private Grabable pickedObject = null;
     private Transform pickedObjOldParent = null;
 
+    [HideInInspector] public bool onlyWalk;
+
     private void Start ()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -269,6 +271,14 @@ public class PlayerController : MonoBehaviour
                 pickedObject = null;
             }
             grabbing = false;
+        }
+
+        if (onlyWalk)
+        {
+            crouching = false;
+            sliding = false;
+            sprinting = false;
+            canJump = false;
         }
 
         //Temporary feedback

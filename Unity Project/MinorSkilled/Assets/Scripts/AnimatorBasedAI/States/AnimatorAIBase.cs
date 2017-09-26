@@ -2,6 +2,8 @@
 
 public abstract class AnimatorAIBase : StateMachineBehaviour
 {
+    public Color debugColor;
+
     [HideInInspector] public UnityEngine.AI.NavMeshAgent agent;
 
     [HideInInspector] public float agentDefaultSpeed;
@@ -23,6 +25,12 @@ public abstract class AnimatorAIBase : StateMachineBehaviour
     {
         if (!IsValid(animator))
             return;
+
+        foreach(MeshRenderer m in animator.GetComponent<AnimatorAIHelper>().changeColorRenderers)
+        {
+            m.material.color = debugColor;
+            m.material.SetColor("_EmissionColor", debugColor);
+        }
 
         ResetAgentSpeed();
         OnStart(animator, stateInfo, layerIndex);

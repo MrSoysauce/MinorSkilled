@@ -1,13 +1,26 @@
 ﻿using UnityEngine;
 
+public enum GrabbingEnemyType
+{
+    Flying,
+    Jumping
+}
+
 public class Enemy2 : Enemy1
 {
     [HideInInspector] public bool attached = false;
 
-    [Header("Player effects")]
+    [Header("General Enemy 2")]
+    [SerializeField] public GrabbingEnemyType type;
+
+    [Header("Player effects (Flying)")]
     [SerializeField] public bool invertControls;
     [SerializeField] public float slow;
     [SerializeField] public bool forceMovement;
+
+    [Header("Player effects (Jumping")]
+    [SerializeField] public float slowSpeed;
+    [SerializeField] public Transform poisonSphere;
 
     protected override void Update()
     {
@@ -29,7 +42,7 @@ public class Enemy2 : Enemy1
         if (attached)
             return;
 
-        if (Vector3.Distance(transform.position, player.position) < catchPlayerRadius)
+        if (Vector3.Distance(transform.position, player.transform.position) < catchPlayerRadius)
         {
             if (!player.GetComponent<PlayerInteractions>().AttachEnemy(this))
                 return;

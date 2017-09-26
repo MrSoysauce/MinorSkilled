@@ -3,8 +3,9 @@
 public class Enemy1 : AnimatorAIHelper
 {
     [Space(10)]
+    [Header("General")]
     [SerializeField] public GameObject visuals;
-    [SerializeField] protected Transform player;
+    [SerializeField] protected PlayerInteractions player;
 
     [Header("Player detection")]
     [SerializeField] protected bool drawRadius;
@@ -31,13 +32,13 @@ public class Enemy1 : AnimatorAIHelper
 
     protected virtual void Update()
     {
-        bool inrange = Vector3.Distance(transform.position, player.position) < radius;
+        bool inrange = Vector3.Distance(transform.position, player.transform.position) < radius;
 
         bool allowedToWalk;
         if (origin == null)
             allowedToWalk = true;
         else
-            allowedToWalk = Vector3.Distance(origin.position, player.position) < originRange;
+            allowedToWalk = Vector3.Distance(origin.position, player.transform.position) < originRange;
 
         bool canSee = false;
         if (inrange && allowedToWalk)
@@ -45,10 +46,16 @@ public class Enemy1 : AnimatorAIHelper
             if (requiresVision)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(visuals.transform.position, player.position - visuals.transform.position, out hit, radius))
+                foreach (Transform p in player.raycastPoints)
                 {
-                    if (hit.transform.CompareTag("Player"))
-                        canSee = true;
+                    if (Physics.Raycast(visuals.transform.position, p.position - visuals.transform.position, out hit, radius))
+                    {
+                        if (hit.transform.CompareTag("Player"))
+                        {
+                            canSee = true;
+                            break;
+                        }
+                    }
                 }
             }
             else
@@ -66,7 +73,7 @@ public class Enemy1 : AnimatorAIHelper
 
     protected virtual void inRangeCheck()
     {
-        if (Vector3.Distance(transform.position, player.position) < catchPlayerRadius)
+        if (Vector3.Distance(transform.position, player.transform.position) < catchPlayerRadius)
             player.GetComponent<PlayerInteractions>().RespawnPlayer();
     }
 

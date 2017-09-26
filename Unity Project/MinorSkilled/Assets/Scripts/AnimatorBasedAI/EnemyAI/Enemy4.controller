@@ -5,7 +5,7 @@ AnimatorController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Enemy2
+  m_Name: Enemy4
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: CanSeePlayer
@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8a834b9dad6ac4fb2e5d05e6db4a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugColor: {r: 0.19999993, g: 1, b: 0, a: 0}
   agent: {fileID: 0}
   agentDefaultSpeed: 0
   agentDefaultAngularSpeed: 0
@@ -61,6 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 929c35ed32b577f46885f6dcb7723b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugColor: {r: 0, g: 0.54482746, b: 1, a: 0}
   agent: {fileID: 0}
   agentDefaultSpeed: 0
   agentDefaultAngularSpeed: 0
@@ -75,12 +77,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 700047b859776cd4ca4f3343957ebea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugColor: {r: 1, g: 0, b: 0, a: 0}
   agent: {fileID: 0}
   agentDefaultSpeed: 0
   agentDefaultAngularSpeed: 0
   goal: {x: 0, y: 0, z: 0}
-  speedModifier: 3
-  angularSpeedModifier: 10
+  speedModifier: 2.5
+  angularSpeedModifier: 3.402823e+25
 --- !u!1101 &1101018796048700292
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -247,7 +250,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.75
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1

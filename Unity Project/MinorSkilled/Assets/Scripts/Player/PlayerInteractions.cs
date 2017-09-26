@@ -16,12 +16,15 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private Collider flyingEnemyCollider;
     [SerializeField] private GameObject interactMessage;
 
+    [SerializeField] private MeshRenderer[] fadeRenderers;
+    [SerializeField] public Transform[] raycastPoints;
+
     private RotatePad rotatePad;
 
     private Vector3 spawnPos;
 
     private Enemy2 attachedEnemy = null;
-    private Transform oldEnemyParent;
+    private Coroutine slow;
 
     private void Start()
     {
@@ -50,10 +53,6 @@ public class PlayerInteractions : MonoBehaviour
         flyingEnemyCollider.enabled = false;
     }
 
-    /// <summary>
-    /// Set to null to disable
-    /// </summary>
-    /// <param name="interactable"></param>
     public void SetNPCInRange(NPCInteractable interactable)
     {
         this.npc = interactable;
@@ -109,12 +108,13 @@ public class PlayerInteractions : MonoBehaviour
         PlayerPrefs.SetFloat("CheckpointPosZ", transform.position.z);
         PlayerPrefs.Save();
 
-		spawnPos = transform.position;
+        spawnPos = transform.position;
     }
 
     public void RespawnPlayer()
     {
-        transform.position = spawnPos;
+        SetFadeAlpha(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public bool AttachEnemy(Enemy2 enemy)
@@ -122,25 +122,56 @@ public class PlayerInteractions : MonoBehaviour
         if (attachedEnemy != null)
             return false;
 
-        oldEnemyParent = enemy.transform.parent;
-
         enemy.transform.SetParent(transform);
         enemy.transform.localPosition = new Vector3(0, 0, 0);
         enemy.visuals.transform.localPosition = new Vector3(0, 1.5f, 0);
         enemy.GetComponent<NavMeshAgent>().enabled = false;
-        
+
         attachedEnemy = enemy;
 
         flyingEnemyCollider.enabled = true;
 
-        //Apply speed changes
-        float modSpeed = 1;
-        if (enemy.invertControls)
-            modSpeed *= -1;
-        modSpeed *= enemy.slow;
-        player.scriptableSpeedModifier = modSpeed;
-        player.forceMovement = enemy.forceMovement;
+        if (enemy.type == GrabbingEnemyType.Jumping)
+        {
+            slow = StartCoroutine(SlowPlayer(enemy.slowSpeed));
+        }
+        else if (enemy.type == GrabbingEnemyType.Flying)
+        {
+            //Apply speed changes
+            float modSpeed = 1;
+            if (enemy.invertControls)
+                modSpeed *= -1;
+            modSpeed *= enemy.slow;
+            player.scriptableSpeedModifier = modSpeed;
+            player.forceMovement = enemy.forceMovement;
+        }
+
+        player.onlyWalk = true;
         return true;
+    }
+
+    private IEnumerator SlowPlayer(float slowSpeed)
+    {
+        float mod = 1;
+        Vector3 startScale = new Vector3(1, 1, 1);
+        if (attachedEnemy.poisonSphere)
+            startScale = attachedEnemy.poisonSphere.localScale;
+
+        while (mod > 0)
+        {
+            mod -= Time.deltaTime * slowSpeed;
+            player.scriptableSpeedModifier = mod;
+            if (attachedEnemy.poisonSphere)
+                attachedEnemy.poisonSphere.localScale = startScale * mod;
+
+            SetFadeAlpha(mod);
+            yield return null;
+        }
+
+        DetachEnemy();
+        RespawnPlayer();
+
+        slow = null;
     }
 
     public void DetachEnemy()
@@ -148,18 +179,30 @@ public class PlayerInteractions : MonoBehaviour
         if (attachedEnemy == null)
             return;
 
-        attachedEnemy.attached = false;
-        attachedEnemy.transform.SetParent(oldEnemyParent, true);
-        oldEnemyParent = null;
-
-        flyingEnemyCollider.enabled = false;
-
-        Destroy(attachedEnemy.gameObject);
-        attachedEnemy = null;
-
         //Undo speed changes
         player.scriptableSpeedModifier = 1;
         player.forceMovement = false;
+        player.onlyWalk = false;
+
+        if (slow !=  null)
+        {
+            StopCoroutine(slow);
+            slow = null;
+        }
+
+        flyingEnemyCollider.enabled = false;
+        Destroy(attachedEnemy.gameObject);
+        attachedEnemy = null;
+
+        SetFadeAlpha(1);
+    }
+
+    private void SetFadeAlpha(float a)
+    {
+        foreach (MeshRenderer m in fadeRenderers)
+        {
+            m.material.color = new Color(m.material.color.r, m.material.color.g, m.material.color.b, a);
+        }
     }
 
     private void OnCollisionEnter(Collision c)
@@ -198,6 +241,5 @@ public class PlayerInteractionsEditor : Editor
         }
     }
 }
-
 
 #endif

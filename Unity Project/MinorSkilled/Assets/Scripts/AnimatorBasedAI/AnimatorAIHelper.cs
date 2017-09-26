@@ -5,6 +5,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Animator))]
 public class AnimatorAIHelper : MonoBehaviour
 {
+    [Header("Debug")]
+    [SerializeField] public MeshRenderer[] changeColorRenderers;
+
     [SerializeField] public List<Waypoints> waypoints;
     [SerializeField] public int editID;
     [SerializeField] public Transform wayPointTransform;
