@@ -275,7 +275,6 @@ public class PlayerController : MonoBehaviour
 
         if (onlyWalk)
         {
-            crouching = false;
             sliding = false;
             sprinting = false;
             canJump = false;

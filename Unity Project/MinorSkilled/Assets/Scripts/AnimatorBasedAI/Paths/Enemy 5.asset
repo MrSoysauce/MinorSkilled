@@ -9,10 +9,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7c8f529d27cfc479e75887ef10f565, type: 3}
-  m_Name: Enemy 2
+  m_Name: Enemy 5
   m_EditorClassIdentifier: 
   loop: 1
   ordered: 1
   waypoints:
-  - {x: 52.048164, y: -3.15057, z: 1.8248}
-  - {x: 29.58685, y: -3.4824553, z: -4.4802914}
+  - {x: -9.707388, y: 0.93000126, z: -4.7187905}
+  - {x: -19.763268, y: 0.9534092, z: -4.900305}

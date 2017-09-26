@@ -30,7 +30,7 @@ public class Enemy2 : Enemy1
         {
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
-            visuals.transform.localPosition = new Vector3(0, 1.5f, 0);
+            visuals.transform.localPosition = new Vector3(0, 1.1f, 0);
             return;
         }
 

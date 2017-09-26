@@ -24,12 +24,10 @@ public class Enemy5 : Enemy2
 
     protected override void Update()
     {
-        if (!hanging)
-        {
-            base.Update();
-        }
-
         animator.SetBool("Hanging", hanging);
+
+        if (!hanging)
+            base.Update();
     }
 
     private IEnumerator fall()
@@ -42,7 +40,11 @@ public class Enemy5 : Enemy2
 
             inRangeCheck();
             if (attached)
+            {
+                hanging = false;
+                visuals.transform.localRotation = Quaternion.identity;
                 yield break;
+            }
 
             yield return null;
         }

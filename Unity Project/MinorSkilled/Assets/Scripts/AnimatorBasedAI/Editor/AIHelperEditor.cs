@@ -102,3 +102,12 @@ public class Enemy2Editor : Enemy1Editor
 		base.OnSceneGUI();
 	}
 }
+
+[CustomEditor(typeof(Enemy5))]
+public class Enemy5Editor : Enemy2Editor
+{
+    protected override void OnSceneGUI()
+    {
+        base.OnSceneGUI();
+    }
+}

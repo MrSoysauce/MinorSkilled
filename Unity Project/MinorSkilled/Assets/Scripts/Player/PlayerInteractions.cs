@@ -124,7 +124,7 @@ public class PlayerInteractions : MonoBehaviour
 
         enemy.transform.SetParent(transform);
         enemy.transform.localPosition = new Vector3(0, 0, 0);
-        enemy.visuals.transform.localPosition = new Vector3(0, 1.5f, 0);
+        enemy.visuals.transform.localPosition = new Vector3(0, 1.1f, 0);
         enemy.GetComponent<NavMeshAgent>().enabled = false;
 
         attachedEnemy = enemy;
