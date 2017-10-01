@@ -865,7 +865,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -1789,7 +1789,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 133844328}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -23.785275, y: 13.018721, z: -15.699799}
+  m_LocalPosition: {x: -23.59, y: 13.018721, z: -15.699799}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 556475265}
@@ -1806,7 +1806,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
-  m_Range: 19.22
+  m_Range: 36.3
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -1826,7 +1826,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -4809,6 +4809,7 @@ Transform:
   - {fileID: 1752351206}
   - {fileID: 1524629817}
   - {fileID: 732142820}
+  - {fileID: 1514077411}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7955,7 +7956,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -9984,7 +9985,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -11642,7 +11643,7 @@ MonoBehaviour:
   m_Looped: 0
   m_Waypoints:
   - position: {x: -14.138257, y: -28.220062, z: 99.59289}
-    tangent: {x: -0.08442116, y: 1.771595, z: -10.000931}
+    tangent: {x: -0.084420204, y: 0.13084793, z: -10.000938}
     roll: 0
   - position: {x: -14.435023, y: -31.729553, z: 84.821785}
     tangent: {x: 0.026019096, y: -1.15345, z: -4.771515}
@@ -11683,6 +11684,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 935353042}
     m_Modifications:
+    - target: {fileID: 114214098513016662, guid: 9ad92f388b2b1ad4da27361d19b87fa5,
+        type: 2}
+      propertyPath: waypoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4190106803367936, guid: 9ad92f388b2b1ad4da27361d19b87fa5, type: 2}
       propertyPath: m_LocalPosition.x
       value: -32.670437
@@ -11732,6 +11738,27 @@ Prefab:
       propertyPath: player
       value: 
       objectReference: {fileID: 98554505}
+    - target: {fileID: 114214098513016662, guid: 9ad92f388b2b1ad4da27361d19b87fa5,
+        type: 2}
+      propertyPath: waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7b5c2375f7db8994eaf83fa43d087dac,
+        type: 2}
+    - target: {fileID: 114214098513016662, guid: 9ad92f388b2b1ad4da27361d19b87fa5,
+        type: 2}
+      propertyPath: editID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214098513016662, guid: 9ad92f388b2b1ad4da27361d19b87fa5,
+        type: 2}
+      propertyPath: drawRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114214098513016662, guid: 9ad92f388b2b1ad4da27361d19b87fa5,
+        type: 2}
+      propertyPath: drawCatchPlayerRange
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9ad92f388b2b1ad4da27361d19b87fa5, type: 2}
   m_IsPrefabParent: 0
@@ -11795,7 +11822,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -24413,6 +24440,71 @@ Transform:
   m_PrefabParentObject: {fileID: 4503311981744614, guid: 37e9763160d833d42b3fb2b72d060d5a,
     type: 2}
   m_PrefabInternal: {fileID: 191906165}
+--- !u!1 &1514077410
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1514077411}
+  - component: {fileID: 1514077412}
+  m_Layer: 0
+  m_Name: Point light (9)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1514077411
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1514077410}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 46.58, y: 12.49, z: -15.699799}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 556475265}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &1514077412
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1514077410}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 19.22
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 0
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &1524629816
 GameObject:
   m_ObjectHideFlags: 0
@@ -24473,7 +24565,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -27130,7 +27222,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -27451,7 +27543,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -29394,7 +29486,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
