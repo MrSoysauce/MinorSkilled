@@ -15,6 +15,7 @@ public class Enemy1 : AnimatorAIHelper
     [Header("Player catching")]
     [SerializeField] protected bool drawCatchPlayerRange;
     [SerializeField] protected float catchPlayerRadius = 0.5f;
+    [SerializeField] private bool killsPlayer = true;
 
     [Header("Origin")]
     [Tooltip("If origin is set, the enemy will try to stay in the range of origin when trying to chase the player")]
@@ -73,6 +74,8 @@ public class Enemy1 : AnimatorAIHelper
 
     protected virtual void inRangeCheck()
     {
+        if (!killsPlayer)
+            return;
         if (Vector3.Distance(transform.position, player.transform.position) < catchPlayerRadius)
             player.GetComponent<PlayerInteractions>().RespawnPlayer();
     }
