@@ -2,23 +2,24 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(Animator))]
 public class AnimatorAIHelper : MonoBehaviour
 {
-    [Header("Debug")]
-    [SerializeField] public MeshRenderer[] changeColorRenderers;
-
+    [Header("AI General")]
     [SerializeField] public List<Waypoints> waypoints;
     [SerializeField] public int editID;
     [SerializeField] public Transform wayPointTransform;
+    [SerializeField] protected NavMeshAgent agent;
+    [SerializeField] protected Animator animator;
 
-    [SerializeField] private NavMeshAgent agent;
-    protected Animator animator;
+    [Header("Debug")]
+    [SerializeField] public MeshRenderer[] changeColorRenderers;
 
     protected virtual void Start()
     {
         //Get animator
-        animator = GetComponent<Animator>();
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
         if (animator == null)
         {
             Debug.LogError("AnimatorAIHelper (" + name + ").animator is null! Please make sure that there's an animator component attached to this object!",this);

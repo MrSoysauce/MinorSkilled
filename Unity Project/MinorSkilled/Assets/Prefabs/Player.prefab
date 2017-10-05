@@ -244,7 +244,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.44, y: -4, z: 0}
+  m_LocalPosition: {x: 16.49, y: 8.909877, z: -8.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4583761694803104}
@@ -519,6 +519,15 @@ MonoBehaviour:
   - {fileID: 4050531835958054}
   - {fileID: 4233344019147662}
   - {fileID: 4682266022373348}
+  col: {fileID: 136599095235291796}
+  audioLandingRange: 18
+  drawAudioLandingRange: 0
+  audioSprintRange: 12
+  drawAudioSprintRange: 0
+  audioCrouchRange: 4.7
+  drawAudioCrouchRange: 0
+  audioWalkingRange: 9.63
+  drawAudioWalkingRange: 0
 --- !u!136 &136599095235291796
 CapsuleCollider:
   m_ObjectHideFlags: 1

@@ -9,10 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b7c8f529d27cfc479e75887ef10f565, type: 3}
-  m_Name: Leon TestScene Path 1
+  m_Name: Standard Enemy Leon TestScene
   m_EditorClassIdentifier: 
   loop: 1
   ordered: 1
   waypoints:
-  - {x: 1, y: -4, z: 2}
-  - {x: 1, y: -4, z: -5}
+  - {x: 38.311275, y: 8.968361, z: -19.670658}
+  - {x: 35.10082, y: 10.90377, z: -14.539463}
+  - {x: 33.67942, y: 9.079985, z: 6.8124065}
+  - {x: 49.254097, y: 9.846939, z: -2.9495983}
+  - {x: 50.308994, y: 9.594809, z: -13.182457}

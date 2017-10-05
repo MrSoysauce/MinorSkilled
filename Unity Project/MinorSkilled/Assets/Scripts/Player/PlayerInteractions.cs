@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -19,6 +20,23 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private MeshRenderer[] fadeRenderers;
     [SerializeField] public Transform[] raycastPoints;
 
+    [SerializeField] public Collider col;
+
+    [Header("Audio trigger ranges")] [SerializeField] private float audioLandingRange;
+    [SerializeField] private bool drawAudioLandingRange;
+
+    [SerializeField] private float audioSprintRange;
+    [SerializeField] private bool drawAudioSprintRange;
+
+    [SerializeField] private float audioCrouchRange;
+    [SerializeField] private bool drawAudioCrouchRange;
+
+    [SerializeField] private float audioWalkingRange;
+    [SerializeField] private bool drawAudioWalkingRange;
+
+
+    private bool landing = false;
+
     private RotatePad rotatePad;
 
     private Vector3 spawnPos;
@@ -32,7 +50,6 @@ public class PlayerInteractions : MonoBehaviour
             interactMessage.SetActive(false);
 
         player = GetComponent<PlayerController>();
-
         if (!PlayerPrefs.HasKey("Level") || PlayerPrefs.GetString("Level") != SceneManager.GetActiveScene().name)
         {
             PlayerPrefs.SetString("Level", SceneManager.GetActiveScene().name);
@@ -184,7 +201,7 @@ public class PlayerInteractions : MonoBehaviour
         player.forceMovement = false;
         player.onlyWalk = false;
 
-        if (slow !=  null)
+        if (slow != null)
         {
             StopCoroutine(slow);
             slow = null;
@@ -223,11 +240,49 @@ public class PlayerInteractions : MonoBehaviour
             DetachEnemy();
         }
     }
+
+    public float GetSoundRange()
+    {
+        if (!player.isMoving)
+            return 0;
+
+        if (landing)
+            return audioLandingRange;
+        if (player.sprinting)
+            return audioSprintRange;
+        if (player.crouching)
+            return audioCrouchRange;
+
+        return audioWalkingRange;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (drawAudioLandingRange)
+            Gizmos.DrawWireSphere(transform.position, audioLandingRange);
+
+        if (drawAudioSprintRange)
+            Gizmos.DrawWireSphere(transform.position, audioSprintRange);
+
+        if (drawAudioCrouchRange)
+            Gizmos.DrawWireSphere(transform.position, audioCrouchRange);
+
+        if (drawAudioWalkingRange)
+            Gizmos.DrawWireSphere(transform.position, audioWalkingRange);
+    }
+
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+        if (EditorApplication.isPlaying)
+            Gizmos.DrawWireSphere(transform.position, GetSoundRange());
+#endif
+    }
 }
 
 #if UNITY_EDITOR
 
-[CustomEditor(typeof(PlayerInteractions))]
+    [CustomEditor(typeof(PlayerInteractions))]
 public class PlayerInteractionsEditor : Editor
 {
     public override void OnInspectorGUI()

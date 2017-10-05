@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float walkSpeed = 2;
+    [SerializeField] private LayerMask groundedLayerMask;
     [SerializeField] private float jumpStrength = 5;
     [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool grabInput;
     [HideInInspector] public bool pulling;
-    public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f); } }
+    public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f, groundedLayerMask); } }
 
     [Header("Input")]
     [ReadOnly] public bool jumpInput;
