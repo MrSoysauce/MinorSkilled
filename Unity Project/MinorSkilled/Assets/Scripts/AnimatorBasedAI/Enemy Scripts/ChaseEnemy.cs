@@ -11,6 +11,7 @@ public class ChaseEnemy : EnemyBase
 
         if (Vector3.Distance(transform.position, player.transform.position) < interactionRadius)
         {
+            //TODO: Animations and stuff
             player.RespawnPlayer();
         }
     }

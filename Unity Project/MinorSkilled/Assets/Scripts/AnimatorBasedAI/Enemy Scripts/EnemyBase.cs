@@ -29,10 +29,10 @@ public class EnemyBase : AnimatorAIHelper
     {
         base.Start();
         Debug.Assert(player != null,
-            "PlayerController field in " + name + " is null! Please make sure to set it. Disabling script.");
+            "PlayerController field in " + name + " is null! Please make sure to set it.");
     }
 
-    public bool CanSee(Collider obj)
+    public virtual bool CanSee(Collider obj)
     {
         Vector3 directionToTarget = obj.transform.position - transform.position;
         float angle = Vector3.Angle(transform.forward, directionToTarget);
@@ -62,7 +62,7 @@ public class EnemyBase : AnimatorAIHelper
         SetAnimatorValues();
     }
 
-    private void CheckSight()
+    protected void CheckSight()
     {
         bool canSee = CanSee(player.col);
         chasing = canSee;
