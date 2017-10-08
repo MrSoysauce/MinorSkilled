@@ -95,7 +95,16 @@ public class EnemyBaseEditor : AIHelperEditor
 }
 
 [CustomEditor(typeof(GrabPlayerEnemy))]
-public class GrabPlayerEnemy : EnemyBaseEditor
+public class GrabPlayerEnemyEditor : EnemyBaseEditor
+{
+    protected override void OnSceneGUI()
+    {
+        base.OnSceneGUI();
+    }
+}
+
+[CustomEditor(typeof(DroppingGrabPlayerEnemy))]
+public class DroppingGrabPlayerEnemyEditor : GrabPlayerEnemyEditor
 {
     protected override void OnSceneGUI()
     {
