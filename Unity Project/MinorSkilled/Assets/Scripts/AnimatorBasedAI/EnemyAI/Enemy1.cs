@@ -28,7 +28,7 @@ public class Enemy1 : AnimatorAIHelper
         base.Start();
 
         if (player == null)
-            Debug.LogError("Player is null in " + name);
+            Debug.LogError("Player is null in " + name,this);
     }
 
     protected virtual void Update()
