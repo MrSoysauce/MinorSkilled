@@ -88,7 +88,7 @@ public class CollisionEventManagerEditor : Editor
 
         for (int i = 0; i < manager.events.Count; i++)
         {
-            if (cachedEditors.Count < manager.events.Count) cachedEditors.Add(new Editor());
+			if (cachedEditors.Count < manager.events.Count) cachedEditors.Add(ScriptableObject.CreateInstance<Editor>());
             if (showEvents.Count < manager.events.Count) showEvents.Add(false);
             showEvents[i] = EditorGUILayout.Foldout(showEvents[i], "Event " + (i+1));
             if (showEvents[i])
