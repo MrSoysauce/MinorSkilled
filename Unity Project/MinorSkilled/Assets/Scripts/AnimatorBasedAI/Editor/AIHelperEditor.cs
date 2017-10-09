@@ -85,8 +85,8 @@ public class AIHelperEditor : Editor
     }
 }
 
-[CustomEditor(typeof(Enemy1))]
-public class Enemy1Editor : AIHelperEditor
+[CustomEditor(typeof(EnemyBase))]
+public class EnemyBaseEditor : AIHelperEditor
 {
     protected override void OnSceneGUI()
     {
@@ -94,17 +94,17 @@ public class Enemy1Editor : AIHelperEditor
     }
 }
 
-[CustomEditor(typeof(Enemy2))]
-public class Enemy2Editor : Enemy1Editor
+[CustomEditor(typeof(GrabPlayerEnemy))]
+public class GrabPlayerEnemyEditor : EnemyBaseEditor
 {
-	protected override void OnSceneGUI()
-	{
-		base.OnSceneGUI();
-	}
+    protected override void OnSceneGUI()
+    {
+        base.OnSceneGUI();
+    }
 }
 
-[CustomEditor(typeof(Enemy5))]
-public class Enemy5Editor : Enemy2Editor
+[CustomEditor(typeof(DroppingGrabPlayerEnemy))]
+public class DroppingGrabPlayerEnemyEditor : GrabPlayerEnemyEditor
 {
     protected override void OnSceneGUI()
     {

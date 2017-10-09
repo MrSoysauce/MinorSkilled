@@ -14,7 +14,7 @@ public class WaypointPatrol : AnimatorAIBase
 
     protected override void OnStart(Animator anim, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        AnimatorAIHelper helper = anim.GetComponent<AnimatorAIHelper>();
+        AnimatorAIHelper helper = GetHelper(anim);
         wp = helper.waypoints[waypointID];
         waypointsToGo = new List<Vector3>(wp.waypoints);
         finishedPatrolling = false;

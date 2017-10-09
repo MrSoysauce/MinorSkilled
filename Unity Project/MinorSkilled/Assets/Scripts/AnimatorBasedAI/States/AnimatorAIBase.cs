@@ -26,10 +26,17 @@ public abstract class AnimatorAIBase : StateMachineBehaviour
         if (!IsValid(animator))
             return;
 
-        foreach(MeshRenderer m in animator.GetComponent<AnimatorAIHelper>().changeColorRenderers)
+        AnimatorAIHelper helper = GetHelper(animator);
+        if (helper.changeColorRenderers != null)
         {
-            m.material.color = debugColor;
-            m.material.SetColor("_EmissionColor", debugColor);
+            foreach (MeshRenderer m in helper.changeColorRenderers)
+            {
+                if (m != null)
+                {
+                    m.material.color = debugColor;
+                    m.material.SetColor("_EmissionColor", debugColor);
+                }
+            }
         }
 
         ResetAgentSpeed();
@@ -61,7 +68,7 @@ public abstract class AnimatorAIBase : StateMachineBehaviour
     {
         if (agent == null)
         {
-            AnimatorAIHelper helper = animator.GetComponent<AnimatorAIHelper>();
+            AnimatorAIHelper helper = GetHelper(animator);
             if (helper != null) helper.AssignAgent();
             else Debug.LogError("Please assign an AnimatorAIHelper to " + animator.gameObject.name,animator.gameObject);
 
@@ -73,5 +80,22 @@ public abstract class AnimatorAIBase : StateMachineBehaviour
         }
 
         return true;
+    }
+
+    protected AnimatorAIHelper GetHelper(Animator a)
+    {
+        AnimatorAIHelper r;
+        r = a.GetComponent<AnimatorAIHelper>();
+        if (r != null)
+            return r;
+
+        r = a.GetComponentInParent<AnimatorAIHelper>();
+        if (r != null)
+            return r;
+
+        //Last try
+        r = a.GetComponentInChildren<AnimatorAIHelper>();
+
+        return r;
     }
 }
