@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Experimental.UIElements;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
@@ -22,7 +18,8 @@ public class PlayerInteractions : MonoBehaviour
 
     [SerializeField] public Collider col;
 
-    [Header("Audio trigger ranges")] [SerializeField] private float audioLandingRange;
+    [Header("Audio trigger ranges")]
+    [SerializeField] private float audioLandingRange;
     [SerializeField] private bool drawAudioLandingRange;
 
     [SerializeField] private float audioSprintRange;
@@ -34,15 +31,13 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private float audioWalkingRange;
     [SerializeField] private bool drawAudioWalkingRange;
 
-
     private bool landing = false;
 
     private RotatePad rotatePad;
 
     private Vector3 spawnPos;
 
-    private Enemy2 attachedEnemy = null;
-    private Coroutine slow;
+    private GrabPlayerEnemy attachedEnemy = null;
 
     private void Start()
     {
@@ -134,111 +129,61 @@ public class PlayerInteractions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public bool AttachEnemy(Enemy2 enemy)
+    public bool CanAttachEnemy()
     {
-        if (attachedEnemy != null)
-            return false;
+        return attachedEnemy == null;
+    }
 
-        enemy.transform.SetParent(transform);
-        enemy.transform.localPosition = new Vector3(0, 0, 0);
-        enemy.visuals.transform.localPosition = new Vector3(0, 1.1f, 0);
-        enemy.GetComponent<NavMeshAgent>().enabled = false;
-
+    public void AttachEnemy(GrabPlayerEnemy enemy)
+    {
         attachedEnemy = enemy;
-
         flyingEnemyCollider.enabled = true;
-
-        if (enemy.type == GrabbingEnemyType.Jumping)
-        {
-            slow = StartCoroutine(SlowPlayer(enemy.slowSpeed));
-        }
-        else if (enemy.type == GrabbingEnemyType.Flying)
-        {
-            //Apply speed changes
-            float modSpeed = 1;
-            if (enemy.invertControls)
-                modSpeed *= -1;
-            modSpeed *= enemy.slow;
-            player.scriptableSpeedModifier = modSpeed;
-            player.forceMovement = enemy.forceMovement;
-        }
-
         player.onlyWalk = true;
-        return true;
+        enemy.ApplyEffects(player);
     }
 
-    private IEnumerator SlowPlayer(float slowSpeed)
-    {
-        float mod = 1;
-        Vector3 startScale = new Vector3(1, 1, 1);
-        if (attachedEnemy.poisonSphere)
-            startScale = attachedEnemy.poisonSphere.localScale;
-
-        while (mod > 0)
-        {
-            mod -= Time.deltaTime * slowSpeed;
-            player.scriptableSpeedModifier = mod;
-            if (attachedEnemy.poisonSphere)
-                attachedEnemy.poisonSphere.localScale = startScale * mod;
-
-            SetFadeAlpha(mod);
-            yield return null;
-        }
-
-        DetachEnemy();
-        RespawnPlayer();
-
-        slow = null;
-    }
-
-    public void DetachEnemy()
+    private void DetachEnemy()
     {
         if (attachedEnemy == null)
             return;
+
+        //Tell enemy that we're done with him
+        attachedEnemy.Detach();
 
         //Undo speed changes
         player.scriptableSpeedModifier = 1;
         player.forceMovement = false;
         player.onlyWalk = false;
 
-        if (slow != null)
-        {
-            StopCoroutine(slow);
-            slow = null;
-        }
+        //Undo visual changes
+        SetFadeAlpha(1);
 
         flyingEnemyCollider.enabled = false;
-        Destroy(attachedEnemy.gameObject);
         attachedEnemy = null;
-
-        SetFadeAlpha(1);
     }
 
-    private void SetFadeAlpha(float a)
+    public void SetFadeAlpha(float a)
     {
         foreach (MeshRenderer m in fadeRenderers)
         {
-            m.material.color = new Color(m.material.color.r, m.material.color.g, m.material.color.b, a);
+            if (m != null &&m.material != null)
+                m.material.color = new Color(m.material.color.r, m.material.color.g, m.material.color.b, a);
         }
     }
 
     private void OnCollisionEnter(Collision c)
     {
+        //Kill enemy by running into a low ceiling
         foreach (ContactPoint cp in c.contacts)
-        {
             if (cp.thisCollider == flyingEnemyCollider)
-            {
                 DetachEnemy();
-            }
-        }
     }
 
     private void OnTriggerEnter(Collider c)
     {
+        //Kill enemy with fog
         if (c.CompareTag("EnemyKillingFog"))
-        {
             DetachEnemy();
-        }
     }
 
     public float GetSoundRange()
