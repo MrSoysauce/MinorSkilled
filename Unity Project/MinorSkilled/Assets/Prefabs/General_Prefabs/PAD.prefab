@@ -111,6 +111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotateAxis: 0
   rotateAmount: 180
+  activateWithButton: 1
   rotateController: {fileID: 0}
 --- !u!114 &114846353745842752
 MonoBehaviour:
