@@ -111,12 +111,3 @@ public class DroppingGrabPlayerEnemyEditor : GrabPlayerEnemyEditor
         base.OnSceneGUI();
     }
 }
- 	
-[CustomEditor(typeof(ChaseEnemy))]
-public class ChaseEnemyEditor : EnemyBaseEditor
-{
-	protected override void OnSceneGUI()
-	{
-		base.OnSceneGUI();
-	}
-}
