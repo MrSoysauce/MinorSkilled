@@ -647,8 +647,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.49, y: 8.909877, z: -8.44}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 49.731, y: 11.852, z: -13.03}
+  m_LocalScale: {x: 0.6915737, y: 0.8463818, z: 1}
   m_Children:
   - {fileID: 4583761694803104}
   - {fileID: 4464586055729428}
@@ -1813,17 +1813,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f05df918f179941bd7baebbf1c410e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 4
+  walkSpeed: 2.5
   groundedLayerMask:
     serializedVersion: 2
     m_Bits: 4294965247
-  jumpStrength: 6.5
+  jumpStrength: 5.5
   pullingSlow: 0.3
   drag: 0.75
   gravity: {x: 0, y: -40, z: 0}
   useGravity: 1
-  slideTime: 0.5
-  runModifier: 2.3
+  slideTime: 0.3
+  runModifier: 1.5
   sneakModifier: 0.6
   grabModifier: 0.5
   crouchDetectionDistance: 0.5
