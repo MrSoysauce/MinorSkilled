@@ -4,4 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Prototype_Tutorial.unity
+    guid: bd5381fc49783f841849956a2142f163
+  - enabled: 1
+    path: Assets/Scenes/ChrisEnemyTestSun.unity
+    guid: a9515b364c4203d43822aab6aae6507d

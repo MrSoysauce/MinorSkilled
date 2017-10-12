@@ -22,6 +22,10 @@ public class GameManager : Singleton<GameManager>
 			Debug.LogError ("U idiot, why u try to play an animation with an object that doesnt even have an animation component. Baka, tehee~", this);
 	}
 
+	public void LoadScene(int sceneIndex) {
+		SceneManager.LoadScene (sceneIndex);
+	}
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R)) SceneManager.LoadScene(SceneManager.GetActiveScene().name);
