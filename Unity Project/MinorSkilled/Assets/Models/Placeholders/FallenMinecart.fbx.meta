@@ -1,37 +1,15 @@
 fileFormatVersion: 2
-guid: 8947bf060d3378e438ef7c6edd552d42
-timeCreated: 1507808806
+guid: e4877fdbbf4eb7d47af3c4ef82363a19
+timeCreated: 1508161040
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
-    100000: Cart
-    100002: Dirt
-    100004: //RootNode
-    100006: Wheel1
-    100008: Wheel2
-    100010: Wheel3
-    400000: Cart
-    400002: Dirt
-    400004: //RootNode
-    400006: Wheel1
-    400008: Wheel2
-    400010: Wheel3
-    2300000: Cart
-    2300002: Dirt
-    2300004: Wheel1
-    2300006: Wheel2
-    2300008: Wheel3
-    3300000: Cart
-    3300002: Dirt
-    3300004: Wheel1
-    3300006: Wheel2
-    3300008: Wheel3
-    4300000: Cart
-    4300002: Wheel1
-    4300004: Wheel2
-    4300006: Wheel3
-    4300008: Dirt
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: FallenMinecart
   materials:
     importMaterials: 1
     materialName: 0
