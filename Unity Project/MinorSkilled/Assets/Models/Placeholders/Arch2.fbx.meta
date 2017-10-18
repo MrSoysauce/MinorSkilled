@@ -1,22 +1,17 @@
 fileFormatVersion: 2
-guid: 1efb5f2e7349b3a47b471150066e3a65
-timeCreated: 1507555406
+guid: 5c50038d0768ca1449510a6b3efe0023
+timeCreated: 1508320522
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
-    100000: BrokenPillar1
-    100002: BrokenPillar2
-    100004: //RootNode
-    400000: BrokenPillar1
-    400002: BrokenPillar2
-    400004: //RootNode
-    2300000: BrokenPillar1
-    2300002: BrokenPillar2
-    3300000: BrokenPillar1
-    3300002: BrokenPillar2
-    4300000: BrokenPillar1
-    4300002: BrokenPillar2
+    100000: Arch2
+    100002: //RootNode
+    400000: Arch2
+    400002: //RootNode
+    2300000: Arch2
+    3300000: Arch2
+    4300000: Arch2
   materials:
     importMaterials: 1
     materialName: 0
@@ -44,7 +39,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

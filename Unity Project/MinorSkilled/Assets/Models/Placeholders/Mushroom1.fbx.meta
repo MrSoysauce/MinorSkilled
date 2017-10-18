@@ -1,37 +1,17 @@
 fileFormatVersion: 2
-guid: 05315c0bf6e3ab549a1f43602e8357e0
-timeCreated: 1508246392
+guid: 8dd6cea7d9a33164fba7984a5136fd80
+timeCreated: 1508324397
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
     100000: Mushroom1
     100002: //RootNode
-    100004: Mushroom2
-    100006: Mushroom3
-    100008: Mushroom4
-    100010: Mushroom5
     400000: Mushroom1
     400002: //RootNode
-    400004: Mushroom2
-    400006: Mushroom3
-    400008: Mushroom4
-    400010: Mushroom5
     2300000: Mushroom1
-    2300002: Mushroom2
-    2300004: Mushroom3
-    2300006: Mushroom4
-    2300008: Mushroom5
     3300000: Mushroom1
-    3300002: Mushroom2
-    3300004: Mushroom3
-    3300006: Mushroom4
-    3300008: Mushroom5
-    4300000: Mushroom5
-    4300002: Mushroom4
-    4300004: Mushroom3
-    4300006: Mushroom2
-    4300008: Mushroom1
+    4300000: Mushroom1
   materials:
     importMaterials: 1
     materialName: 0
@@ -59,7 +39,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     importVisibility: 1
