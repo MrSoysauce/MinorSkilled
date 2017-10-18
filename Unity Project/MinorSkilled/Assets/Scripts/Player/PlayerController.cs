@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float slideTime = 0.2f;
 
     [SerializeField] private float runModifier = 2;
+    [SerializeField] private float sprintDrainSpeed = 0.1f;
+    [SerializeField] private float sprintRegainSpeed = 0.2f;
+
     [SerializeField] private float sneakModifier = 0.5f;
     [SerializeField] private float grabModifier = 0.5f;
 
@@ -47,13 +50,18 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool grabInput;
     [HideInInspector] public bool pulling;
     public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f, groundedLayerMask); } }
+    public bool IsGrounded(float distance) { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, distance, groundedLayerMask); }
 
     [Header("Input")]
     [ReadOnly] public bool jumpInput;
+    [ReadOnly] public bool jumpInputPressed;
     [ReadOnly] public bool sprintInput;
     [ReadOnly] public bool crouchInput;
     [ReadOnly] public bool climbInput;
     [ReadOnly] public bool isMoving;
+
+    [ReadOnly] public float sprintCharge = 100;
+
     private Vector3 forward;
     private Camera playerCamera;
 
@@ -74,8 +82,12 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public bool onlyWalk;
 
+    private PlayerInteractions interactions;
+
     private void Start ()
     {
+        interactions = GetComponent<PlayerInteractions>();
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         rb = GetComponent<Rigidbody>();
@@ -113,7 +125,10 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
-        jumpInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0); //Space or A
+        if (!jumpInput)
+            jumpInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0); //Space or A
+        jumpInputPressed = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0); //Space or A
+
         climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f; //Left ctrl or trigger
         grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3); //J or Y
 
@@ -156,8 +171,6 @@ public class PlayerController : MonoBehaviour
             forward = new Vector3(forward.x, 0, forward.z);
         }
         else forward = new Vector3(v, 0, -h).normalized;
-
-        Vector3 f = transform.TransformDirection(new Vector3(0, 0, 1));
 
         //Don't turn if grabbing obj
         if (pickedObject != null && grabbing && !pickedObject.liftable)
@@ -207,7 +220,18 @@ public class PlayerController : MonoBehaviour
 
         //Climbing (can't climb while sliding)
         climbing = false;
-        if (climbInput && !sliding && Physics.Raycast(transform.position, transform.forward, climbDistance, climbLayer))
+
+        bool canClimb = false;
+        for (int i = 0; i < interactions.raycastPoints.Length; i++)
+        {
+            if (Physics.Raycast(interactions.raycastPoints[i].position, transform.forward, climbDistance, climbLayer))
+            {
+                canClimb = true;
+                break;
+            }
+        }
+
+        if (climbInput && !sliding && canClimb)
         {
             sprinting = false;
             canJump = false;
@@ -296,6 +320,15 @@ public class PlayerController : MonoBehaviour
         //Disable jumping when crouching or sliding
         if (crouching || sliding)
             canJump = false;
+
+        if (sprinting && isMoving)
+            sprintCharge -= sprintDrainSpeed * Time.fixedDeltaTime;
+        else
+            sprintCharge += sprintRegainSpeed * Time.fixedDeltaTime;
+
+        sprintCharge = Mathf.Clamp(sprintCharge, 0, 100);
+        if (Mathf.RoundToInt(sprintCharge) == 0)
+            sprinting = false;
     }
 
     private void FixedUpdate()
@@ -315,25 +348,32 @@ public class PlayerController : MonoBehaviour
 
         if (!canMove && !sliding) return;
 
-        //Run
-        float slow = 1;
-        slow *= pulling ? pullingSlow : 1;
-        rb.AddForce(forward * speed * slow, ForceMode.Impulse);
-
         //Jump
         if (jumpInput && canJump && allowJump)
         {
             rb.AddForce(0, jumpStrength * 100, 0);
-            canJump = false;
+
+            if (!jumpInputPressed || !IsGrounded(2))
+            {
+                canJump = false;
+                jumpInput = false;
+            }
         }
+
+        //Run
+        float slow = 1;
+        slow *= pulling ? pullingSlow : 1;
+        if (grounded)
+            rb.AddForce(forward * speed * slow, ForceMode.Impulse);
 
         if (climbing)
         {
-            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * verticalInput, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * verticalInput, rb.velocity.z) +
+                          transform.forward * walkSpeed*2;
         }
 
-        //Apply drag
-        rb.velocity = new Vector3(rb.velocity.x * (1 - drag), rb.velocity.y, rb.velocity.z * (1 - drag));
+        float d = grounded || climbing ? drag : 0;
+        rb.velocity = new Vector3(rb.velocity.x * (1 - d), rb.velocity.y, rb.velocity.z * (1 - d));
     }
 
     private void OnDrawGizmos()
