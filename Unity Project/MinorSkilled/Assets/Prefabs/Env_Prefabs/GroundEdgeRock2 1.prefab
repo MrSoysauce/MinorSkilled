@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33111361580109918}
   - component: {fileID: 23492118761574478}
   m_Layer: 0
-  m_Name: 'GroundEdgeRock2 '
+  m_Name: GroundEdgeRock2 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

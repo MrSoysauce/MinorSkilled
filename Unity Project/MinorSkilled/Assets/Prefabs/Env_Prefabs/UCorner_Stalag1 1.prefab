@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33125906855242394}
   - component: {fileID: 23241233974328578}
   m_Layer: 0
-  m_Name: UCorner_Stalag1
+  m_Name: UCorner_Stalag1 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
