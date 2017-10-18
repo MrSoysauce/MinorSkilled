@@ -4,14 +4,24 @@ using UnityEngine;
 
 public class Teleport : MonoBehaviour {
 
-	public GameObject exit;
+	public float waitTime = 5;
 	public GameObject player;
+    public GameObject exit;
 
-	void OnCollisionEnter (Collision collision)
-	{
-		if(collision.gameObject == player)
-		{
-			player.transform.position = exit.transform.position;
-		}
+	Coroutine coroutine = null;
+
+    private void OnTriggerEnter(Collider other)
+    {
+		if (coroutine == null && other.CompareTag("Player"))
+        {
+			coroutine = StartCoroutine (TeleportPlayer ());
+        }
+    }
+
+	IEnumerator TeleportPlayer() {
+		yield return new WaitForSeconds(waitTime); 
+		player.transform.position = exit.transform.position;
+
+		coroutine = null;
 	}
 }
