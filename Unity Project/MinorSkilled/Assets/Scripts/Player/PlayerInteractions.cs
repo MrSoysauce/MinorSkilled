@@ -18,6 +18,8 @@ public class PlayerInteractions : MonoBehaviour
 
     [SerializeField] public Collider col;
 
+    [SerializeField] private float fallDeathTreshold = 2;
+
     [Header("Audio trigger ranges")]
     [SerializeField] private float audioLandingRange;
     [SerializeField] private bool drawAudioLandingRange;
@@ -30,6 +32,8 @@ public class PlayerInteractions : MonoBehaviour
 
     [SerializeField] private float audioWalkingRange;
     [SerializeField] private bool drawAudioWalkingRange;
+
+    [SerializeField] private UnityEngine.UI.Image sprintChargeImage;
 
     private bool landing = false;
 
@@ -177,6 +181,19 @@ public class PlayerInteractions : MonoBehaviour
         foreach (ContactPoint cp in c.contacts)
             if (cp.thisCollider == flyingEnemyCollider)
                 DetachEnemy();
+
+        //Falldeathtreshold at <0 means disabled
+        if (fallDeathTreshold > 0 && c.relativeVelocity.magnitude > fallDeathTreshold)
+            RespawnPlayer();
+
+        if (c.gameObject.CompareTag("MovingPlatform"))
+            transform.SetParent(c.transform, true);
+    }
+
+    private void OnCollisionExit(Collision c)
+    {
+        if (c.gameObject.CompareTag("MovingPlatform"))
+            transform.SetParent(null, true);
     }
 
     private void OnTriggerEnter(Collider c)
@@ -222,6 +239,12 @@ public class PlayerInteractions : MonoBehaviour
         if (EditorApplication.isPlaying)
             Gizmos.DrawWireSphere(transform.position, GetSoundRange());
 #endif
+    }
+
+    private void LateUpdate()
+    {
+        if (sprintChargeImage != null)
+            sprintChargeImage.fillAmount = player.sprintCharge / 100;
     }
 }
 
