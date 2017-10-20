@@ -954,7 +954,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1039257542123864}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1.049, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4501714863488504}
@@ -1883,13 +1883,15 @@ MonoBehaviour:
   groundedLayerMask:
     serializedVersion: 2
     m_Bits: 4294965247
-  jumpStrength: 5.5
+  jumpStrength: 2.2
   pullingSlow: 0.3
   drag: 0.75
-  gravity: {x: 0, y: -40, z: 0}
+  gravity: {x: 0, y: -125, z: 0}
   useGravity: 1
   slideTime: 0.5
-  runModifier: 1.5
+  runModifier: 2
+  sprintDrainSpeed: 60
+  sprintRegainSpeed: 60
   sneakModifier: 0.6
   grabModifier: 0.5
   crouchDetectionDistance: 0.5
@@ -1897,7 +1899,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294966271
   climbDistance: 1
-  climbSpeed: 8
+  climbSpeed: 2.2
   climbLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -1913,10 +1915,12 @@ MonoBehaviour:
   grabInput: 0
   pulling: 0
   jumpInput: 0
+  jumpInputPressed: 0
   sprintInput: 0
   crouchInput: 0
   climbInput: 0
   isMoving: 0
+  sprintCharge: 100
   crouching: 0
   sprinting: 0
   sliding: 0
@@ -1967,6 +1971,7 @@ MonoBehaviour:
   - {fileID: 4233344019147662}
   - {fileID: 4682266022373348}
   col: {fileID: 136599095235291796}
+  fallDeathTreshold: 31
   audioLandingRange: 18
   drawAudioLandingRange: 0
   audioSprintRange: 12
@@ -1975,6 +1980,7 @@ MonoBehaviour:
   drawAudioCrouchRange: 0
   audioWalkingRange: 9.63
   drawAudioWalkingRange: 0
+  sprintChargeImage: {fileID: 0}
 --- !u!136 &136599095235291796
 CapsuleCollider:
   m_ObjectHideFlags: 1
