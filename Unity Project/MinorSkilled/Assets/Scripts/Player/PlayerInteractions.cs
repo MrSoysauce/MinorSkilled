@@ -188,12 +188,18 @@ public class PlayerInteractions : MonoBehaviour
 
         if (c.gameObject.CompareTag("MovingPlatform"))
             transform.SetParent(c.transform, true);
+
+        if (c.gameObject.CompareTag("Stairs"))
+            player.onStairs = true;
     }
 
     private void OnCollisionExit(Collision c)
     {
         if (c.gameObject.CompareTag("MovingPlatform"))
             transform.SetParent(null, true);
+
+        if (c.gameObject.CompareTag("Stairs"))
+            player.onStairs = false;
     }
 
     private void OnTriggerEnter(Collider c)
