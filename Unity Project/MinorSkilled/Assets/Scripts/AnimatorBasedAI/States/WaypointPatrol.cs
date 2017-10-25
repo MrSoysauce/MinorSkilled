@@ -34,7 +34,7 @@ public class WaypointPatrol : AnimatorAIBase
 
     private void Patrol(bool checkForDistance = true)
     {
-        if (!agent.isActiveAndEnabled)
+        if (!agent.isActiveAndEnabled || !agent.isOnNavMesh)
             return;
 
         //Did we get to the waypoint yet?
@@ -60,20 +60,20 @@ public class WaypointPatrol : AnimatorAIBase
             }
         }
 
-        Matrix4x4 mat = agent.GetComponent<AnimatorAIHelper>().wayPointTransform.localToWorldMatrix;
+        Transform wpt = agent.GetComponent<AnimatorAIHelper>().wayPointTransform;
 
         //Get new waypoint
-        int i = 0;
+        int i;
         Vector3 newDestination;
         if (wp.ordered)
         {
-            newDestination = mat.MultiplyVector(waypointsToGo[0]);
+            newDestination = wpt.TransformPoint(waypointsToGo[0]);
             i = 0;
         }
         else
         {
             i = Random.Range(0, waypointsToGo.Count);
-            newDestination = mat.MultiplyVector(waypointsToGo[i]);
+            newDestination = wpt.TransformPoint(waypointsToGo[i]);
         }
         waypointsToGo.RemoveAt(i);
 

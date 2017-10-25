@@ -49,13 +49,12 @@ public class AIHelperEditor : Editor
             Vector3 wp = o.waypoints[i];
 
             EditorGUI.BeginChangeCheck();
-            Matrix4x4 mat = helper.wayPointTransform.localToWorldMatrix;
-
-            Vector3 newTargetPosition = Handles.PositionHandle(mat.MultiplyVector(wp), Quaternion.identity);
+            
+            Vector3 newTargetPosition = Handles.PositionHandle(helper.wayPointTransform.TransformPoint(wp), Quaternion.identity);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(o, "Change Waypoint pos");
-                o.waypoints[i] = (mat.inverse.MultiplyVector(newTargetPosition));
+                o.waypoints[i] = helper.wayPointTransform.InverseTransformPoint(newTargetPosition);
                 EditorUtility.SetDirty(o);
             }
 
@@ -67,18 +66,18 @@ public class AIHelperEditor : Editor
                     Handles.color = Color.red;
 
                 if (i != 0)
-                    Debug.DrawLine((mat.MultiplyVector(o.waypoints[i-1])), mat.MultiplyVector(o.waypoints[i]));
+                    Debug.DrawLine(helper.wayPointTransform.TransformPoint(o.waypoints[i - 1]), helper.wayPointTransform.TransformPoint(o.waypoints[i]));
 
                 if (i == 0 || i == o.waypoints.Count - 1)
                 {
-                    Handles.FreeMoveHandle(mat.MultiplyVector(o.waypoints[i]), Quaternion.identity,
-                        HandleUtility.GetHandleSize(mat.MultiplyVector(o.waypoints[i])) / 10, Vector3.zero, Handles.SphereHandleCap);
+                    Handles.FreeMoveHandle(helper.wayPointTransform.TransformPoint(o.waypoints[i]), Quaternion.identity,
+                        HandleUtility.GetHandleSize(helper.wayPointTransform.TransformPoint(o.waypoints[i])) / 10, Vector3.zero, Handles.SphereHandleCap);
                 }
 
                 if (o.loop)
                 {
                     if (i == o.waypoints.Count - 1)
-                        Debug.DrawLine(mat.MultiplyVector(o.waypoints[i]), mat.MultiplyVector(o.waypoints[0]), Color.red);
+                        Debug.DrawLine(helper.wayPointTransform.TransformPoint(o.waypoints[i]), helper.wayPointTransform.TransformPoint(o.waypoints[0]), Color.red);
                 }
             }
         }
@@ -105,6 +104,15 @@ public class GrabPlayerEnemyEditor : EnemyBaseEditor
 
 [CustomEditor(typeof(DroppingGrabPlayerEnemy))]
 public class DroppingGrabPlayerEnemyEditor : GrabPlayerEnemyEditor
+{
+    protected override void OnSceneGUI()
+    {
+        base.OnSceneGUI();
+    }
+}
+
+[CustomEditor(typeof(ChaseEnemy))]
+public class ChaseEnemyEditor : EnemyBaseEditor
 {
     protected override void OnSceneGUI()
     {
