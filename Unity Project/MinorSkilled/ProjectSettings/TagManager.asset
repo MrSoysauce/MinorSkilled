@@ -6,6 +6,7 @@ TagManager:
   tags:
   - EnemyKillingFog
   - MovingPlatform
+  - Stairs
   layers:
   - Default
   - TransparentFX

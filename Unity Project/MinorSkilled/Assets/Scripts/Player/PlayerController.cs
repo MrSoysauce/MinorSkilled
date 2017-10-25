@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
     [SerializeField] private Vector3 gravity = new Vector3(0,-20,0);
     [SerializeField] public bool useGravity = true;
+    [SerializeField] private float stairsGravityModifier = 0.01f;
 
     [Tooltip("The time the player has to be sprinting before he can slide (stops players from insta sliding)")]
     [SerializeField] private float slideTime = 0.2f;
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool sliding;
     [ReadOnly] public bool climbing;
     [ReadOnly] public bool grabbing;
+    [ReadOnly] public bool onStairs;
 
     [HideInInspector] public float scriptableSpeedModifier = 1;
     [HideInInspector] public bool forceMovement;
@@ -342,9 +344,12 @@ public class PlayerController : MonoBehaviour
         if (climbing) speed = 0;
         speed *= scriptableSpeedModifier;
 
+        Vector3 grav = gravity;
+        if (onStairs)
+            grav *= stairsGravityModifier;
         //Apply gravity
         if (useGravity && !climbing)
-            rb.AddForce(gravity, ForceMode.Acceleration);
+            rb.AddForce(grav, ForceMode.Acceleration);
 
         if (!canMove && !sliding) return;
 
