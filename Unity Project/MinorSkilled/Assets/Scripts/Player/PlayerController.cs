@@ -294,7 +294,6 @@ public class PlayerController : MonoBehaviour
 
                         grab.Grab();
 
-                        Debug.Log(grab.liftable);
                         if (grab.liftable)
                         {
                             hit.transform.localPosition = new Vector3(0, 2.5f, 0);
