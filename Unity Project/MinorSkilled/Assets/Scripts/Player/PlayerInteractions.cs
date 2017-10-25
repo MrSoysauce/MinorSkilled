@@ -21,9 +21,6 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private float fallDeathTreshold = 2;
 
     [Header("Audio trigger ranges")]
-    [SerializeField] private float audioLandingRange;
-    [SerializeField] private bool drawAudioLandingRange;
-
     [SerializeField] private float audioSprintRange;
     [SerializeField] private bool drawAudioSprintRange;
 
@@ -33,9 +30,14 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private float audioWalkingRange;
     [SerializeField] private bool drawAudioWalkingRange;
 
-    [SerializeField] private UnityEngine.UI.Image sprintChargeImage;
+    [Header("Bumping")]
+    [SerializeField] private float bumpSoundModDecreaseSpeed = 0.1f;
+    [SerializeField] private float bumpVelocityModifier = 1;
+    private float bumpingSoundMod = 1;
+    [HideInInspector] public SoundModifyingMaterial sndmod;
 
-    private bool landing = false;
+    [Header("Feedback")]
+    [SerializeField] private UnityEngine.UI.Image sprintChargeImage;
 
     private RotatePad rotatePad;
 
@@ -99,6 +101,8 @@ public class PlayerInteractions : MonoBehaviour
             rotatePad.Apply();
             rotatePad = null;
         }
+
+        bumpingSoundMod = Mathf.Lerp(bumpingSoundMod, 1, bumpSoundModDecreaseSpeed * Time.deltaTime);
     }
 
     private void Interact()
@@ -191,6 +195,10 @@ public class PlayerInteractions : MonoBehaviour
 
         if (c.gameObject.CompareTag("Stairs"))
             player.onStairs = true;
+
+        float mod = c.relativeVelocity.magnitude * bumpVelocityModifier;
+        if (mod > bumpingSoundMod)
+            bumpingSoundMod = mod;
     }
 
     private void OnCollisionExit(Collision c)
@@ -214,21 +222,25 @@ public class PlayerInteractions : MonoBehaviour
         if (!player.isMoving)
             return 0;
 
-        if (landing)
-            return audioLandingRange;
-        if (player.sprinting)
-            return audioSprintRange;
-        if (player.crouching)
-            return audioCrouchRange;
+        float range;
 
-        return audioWalkingRange;
+        if (player.sprinting)
+            range = audioSprintRange;
+        else if (player.crouching)
+            range = audioCrouchRange;
+        else
+            range = audioWalkingRange;
+
+        range *= bumpingSoundMod;
+
+        if (sndmod != null)
+            range *= sndmod.Modifier;
+
+        return range;
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (drawAudioLandingRange)
-            Gizmos.DrawWireSphere(transform.position, audioLandingRange);
-
         if (drawAudioSprintRange)
             Gizmos.DrawWireSphere(transform.position, audioSprintRange);
 
