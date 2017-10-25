@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine slidingRoutine = null;
     private Grabable pickedObject = null;
     private Transform pickedObjOldParent = null;
-
+    private Transform ladder;
     [HideInInspector] public bool onlyWalk;
 
     private PlayerInteractions interactions;
@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     private void Turn()
     {
-        float v = climbing ? Mathf.Abs(verticalInput) + 1f : verticalInput;
+        float v = verticalInput;
         float h = horizontalInput;
 
         if (forceMovement)
@@ -179,7 +179,16 @@ public class PlayerController : MonoBehaviour
             return;
 
         //Turn towards forward direction
-        if (forward.magnitude > 0.001f && isMoving) transform.rotation = Quaternion.LookRotation(forward);
+        if (climbing)
+        {
+            Vector3 pos = transform.position;
+            Vector3 lad = ladder.position;
+            pos.y = 0;
+            lad.y = 0;
+
+            transform.rotation = Quaternion.LookRotation((lad - pos).normalized, Vector3.up);
+        }
+        else if (forward.magnitude > 0.001f && isMoving) transform.rotation = Quaternion.LookRotation(forward);
     }
 
     private void ProcessInput()
@@ -226,8 +235,23 @@ public class PlayerController : MonoBehaviour
         bool canClimb = false;
         for (int i = 0; i < interactions.raycastPoints.Length; i++)
         {
-            if (Physics.Raycast(interactions.raycastPoints[i].position, transform.forward, climbDistance, climbLayer))
+            RaycastHit hit;
+            if (Physics.Raycast(interactions.raycastPoints[i].position, transform.forward, out hit, climbDistance,
+                climbLayer))
             {
+                Vector3 climbDirection = -hit.transform.forward;
+                Vector3 walkDir = forward;
+
+                climbDirection.Normalize();
+                walkDir.Normalize();
+                climbDirection.y = 0;
+                walkDir.y = 0;
+
+                float climb = Vector3.Dot(walkDir, climbDirection);
+                if (climb <= 0)
+                    continue;
+
+                ladder = hit.transform;
                 canClimb = true;
                 break;
             }
@@ -373,8 +397,20 @@ public class PlayerController : MonoBehaviour
 
         if (climbing)
         {
-            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * verticalInput, rb.velocity.z) +
-                          transform.forward * walkSpeed*2;
+            if (ladder == null)
+                Debug.LogError("We are climbing without ladder?!");
+
+            Vector3 climbDirection = -ladder.forward;
+            Vector3 walkDir = forward;
+
+            climbDirection.Normalize();
+            walkDir.Normalize();
+            climbDirection.y = 0;
+            walkDir.y = 0;
+
+            float climb = Vector3.Dot(walkDir, climbDirection);
+            Vector3 forwardModifier = climbDirection * 2 * walkSpeed;
+            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * climb, rb.velocity.z) + forwardModifier;
         }
 
         float d = grounded || climbing ? drag : 0;
@@ -386,6 +422,23 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + Vector3.up * 0.1f, transform.position + Vector3.up * 0.1f + Vector3.down*1.2f);
         Gizmos.color = Color.white;
+
+        if (ladder != null)
+        {
+            Vector3 climbDirection = -ladder.forward;
+            Vector3 walkDir = forward;
+
+            climbDirection.Normalize();
+            walkDir.Normalize();
+            climbDirection.y = 0;
+            walkDir.y = 0;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Vector3.zero + new Vector3(0, 0, 3), climbDirection + new Vector3(0, 0, 3));
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(Vector3.zero + new Vector3(0, 0, 3), walkDir + new Vector3(0, 0, 3));
+        }
     }
 
     private IEnumerator SlideCountDown()
