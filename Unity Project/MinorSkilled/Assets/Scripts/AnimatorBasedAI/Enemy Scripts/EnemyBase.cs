@@ -9,6 +9,8 @@ public class EnemyBase : AnimatorAIHelper
     [SerializeField] protected Transform visuals;
     [SerializeField] private bool onlyDrawGizmosOnSelected = false;
 
+    [SerializeField] private float maxBumpVelocity = -1;
+
     [Header("Player interaction")]
     [SerializeField] protected float hearingRadius;
     [SerializeField] private bool drawHearingRadius;
@@ -143,5 +145,18 @@ public class EnemyBase : AnimatorAIHelper
             Gizmos.DrawWireSphere(transform.position, interactionRadius);
 
         Gizmos.color = Color.white;
+    }
+
+    private void OnCollisionEnter(Collision c)
+    {
+        if (c.transform.CompareTag("Player"))
+            return;
+
+        if (maxBumpVelocity < 0)
+            return;
+
+        print(c.relativeVelocity.magnitude);
+        if (Mathf.Abs(c.relativeVelocity.magnitude) > maxBumpVelocity)
+            Destroy(gameObject);
     }
 }

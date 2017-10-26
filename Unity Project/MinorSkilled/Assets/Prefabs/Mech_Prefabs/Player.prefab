@@ -663,7 +663,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 49.731, y: 11.852, z: -13.03}
+  m_LocalPosition: {x: 3.9, y: 12.11, z: -16.03}
   m_LocalScale: {x: 0.6915737, y: 0.8463818, z: 1}
   m_Children:
   - {fileID: 4583761694803104}
@@ -1815,7 +1815,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 100000
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
@@ -1883,11 +1883,12 @@ MonoBehaviour:
   groundedLayerMask:
     serializedVersion: 2
     m_Bits: 4294965247
-  jumpStrength: 2.2
+  jumpStrength: 1.2
   pullingSlow: 0.3
-  drag: 0.75
-  gravity: {x: 0, y: -125, z: 0}
+  drag: 0.3
+  gravity: {x: 0, y: -60, z: 0}
   useGravity: 1
+  stairsGravityModifier: 0.01
   slideTime: 0.5
   runModifier: 2
   sprintDrainSpeed: 60
@@ -1926,6 +1927,7 @@ MonoBehaviour:
   sliding: 0
   climbing: 0
   grabbing: 0
+  onStairs: 0
   scriptableSpeedModifier: 1
   forceMovement: 0
   onlyWalk: 0
@@ -1972,14 +1974,15 @@ MonoBehaviour:
   - {fileID: 4682266022373348}
   col: {fileID: 136599095235291796}
   fallDeathTreshold: 31
-  audioLandingRange: 18
-  drawAudioLandingRange: 0
   audioSprintRange: 12
   drawAudioSprintRange: 0
   audioCrouchRange: 4.7
   drawAudioCrouchRange: 0
   audioWalkingRange: 9.63
   drawAudioWalkingRange: 0
+  bumpSoundModDecreaseSpeed: 3
+  bumpVelocityModifier: 0.2
+  sndmod: {fileID: 0}
   sprintChargeImage: {fileID: 0}
 --- !u!136 &136599095235291796
 CapsuleCollider:
