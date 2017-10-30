@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Prototype_Tutorial.unity
-    guid: bd5381fc49783f841849956a2142f163
+    path: Assets/Scenes/Start.unity
+    guid: f985c5a487707a7438bbcf294e87725c
   - enabled: 1
-    path: Assets/Scenes/ChrisEnemyTestSun.unity
-    guid: a9515b364c4203d43822aab6aae6507d
+    path: Assets/Scenes/Prototype_Tutorial_2.unity
+    guid: b04a5794de4d52b48beae9625daaa124
