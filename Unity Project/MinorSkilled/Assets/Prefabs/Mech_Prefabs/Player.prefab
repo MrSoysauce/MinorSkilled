@@ -662,9 +662,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
-  m_LocalRotation: {x: 0, y: 0.7103135, z: 0, w: 0.7038855}
-  m_LocalPosition: {x: 89.48475, y: 23.596384, z: -7.2500024}
-  m_LocalScale: {x: 0.691574, y: 0.8463819, z: 1.0000002}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3, y: 37.5, z: -3.75}
+  m_LocalScale: {x: 0.69157374, y: 0.8463819, z: 1}
   m_Children:
   - {fileID: 4583761694803104}
   - {fileID: 4464586055729428}
@@ -1888,6 +1888,8 @@ MonoBehaviour:
   drag: 0.3
   gravity: {x: 0, y: -60, z: 0}
   useGravity: 1
+  midairModifier: 0.2
+  midairDrag: 0.05
   stairsGravityModifier: 0.01
   slideTime: 0.5
   runModifier: 2
