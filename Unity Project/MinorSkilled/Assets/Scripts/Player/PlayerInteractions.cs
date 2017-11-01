@@ -7,7 +7,7 @@ using UnityEditor;
 
 public class PlayerInteractions : MonoBehaviour
 {
-    private NPCInteractable npc;
+    private DialogueObject dialogue;
     private PlayerController player;
 
     [SerializeField] private Collider flyingEnemyCollider;
@@ -71,17 +71,9 @@ public class PlayerInteractions : MonoBehaviour
         flyingEnemyCollider.enabled = false;
     }
 
-    public void SetNPCInRange(NPCInteractable interactable)
+    public void SetActiveDialogue(DialogueObject interactable)
     {
-        this.npc = interactable;
-
-        if (interactMessage != null)
-        {
-            if (npc == null)
-                interactMessage.SetActive(false);
-            else if (npc != null)
-                interactMessage.SetActive(true);
-        }
+        dialogue = interactable;
     }
 
     public void SetRotatePad(RotatePad pad)
@@ -107,18 +99,9 @@ public class PlayerInteractions : MonoBehaviour
 
     private void Interact()
     {
-        //Yo we have an npc
-        if (npc != null)
-        {
-            //Disable on start
-            player.canMove = false;
-            player.allowJump = false;
-
-            //Do our cool thing
-            //wot
-
-            //enable after
-        }
+        //We talking
+        if (dialogue != null)
+            dialogue.StartDialogue(player);
     }
 
     public void SetCheckpointToCurrentPos()
@@ -187,7 +170,7 @@ public class PlayerInteractions : MonoBehaviour
                 DetachEnemy();
 
         //Falldeathtreshold at <0 means disabled
-        if (fallDeathTreshold > 0 && c.relativeVelocity.magnitude > fallDeathTreshold)
+        if (fallDeathTreshold > 0 && c.relativeVelocity.magnitude > fallDeathTreshold && !c.gameObject.CompareTag("NoFallDamage"))
             RespawnPlayer();
 
         if (c.gameObject.CompareTag("MovingPlatform"))
