@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
     [SerializeField] private Vector3 gravity = new Vector3(0,-20,0);
     [SerializeField] public bool useGravity = true;
+    [SerializeField] private float midairModifier = 0.5f;
+    [SerializeField] private float midairDrag = 0.1f;
     [SerializeField] private float stairsGravityModifier = 0.01f;
 
     [Tooltip("The time the player has to be sprinting before he can slide (stops players from insta sliding)")]
@@ -358,10 +360,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        bool g = grounded;
+
         ProcessInput();
 
         float speed = walkSpeed;
-        if (sprinting) speed *= runModifier;
+        if (sprinting && g) speed *= runModifier;
         if (crouching) speed *= sneakModifier;
         if (grabbing) speed *= grabModifier;
         if (climbing) speed = 0;
@@ -391,8 +395,9 @@ public class PlayerController : MonoBehaviour
         //Run
         float slow = 1;
         slow *= pulling ? pullingSlow : 1;
-        if (grounded)
-            rb.AddForce(forward * speed * slow, ForceMode.Impulse);
+        if (!g)
+            slow *= midairModifier;
+        rb.AddForce(forward * speed * slow, ForceMode.Impulse);
 
         if (climbing)
         {
@@ -412,7 +417,14 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, climbSpeed * climb, rb.velocity.z) + forwardModifier;
         }
 
-        float d = grounded || climbing ? drag : 0;
+        float d = 0;
+        if (climbing)
+            d = 0;
+        else if (!g)
+            d = midairDrag;
+        else
+            d = drag;
+
         rb.velocity = new Vector3(rb.velocity.x * (1 - d), rb.velocity.y, rb.velocity.z * (1 - d));
     }
 

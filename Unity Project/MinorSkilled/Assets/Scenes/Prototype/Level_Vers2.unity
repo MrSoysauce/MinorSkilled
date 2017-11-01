@@ -48205,7 +48205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Path: {fileID: 834811919}
-  m_PathPosition: 2.371845
+  m_PathPosition: 1.277403
   m_PathOffset: {x: 0, y: 0, z: 0}
   m_XDamping: 0
   m_YDamping: 0
@@ -58732,7 +58732,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh15816
+  m_Name: pb_Mesh42534
   serializedVersion: 8
   m_SubMeshes:
   - serializedVersion: 2
@@ -58910,6 +58910,16 @@ Prefab:
     - target: {fileID: 4257820971055454, guid: 070ce5ebf4329dd48be342bffd444ddf, type: 2}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114591394165532626, guid: 070ce5ebf4329dd48be342bffd444ddf,
+        type: 2}
+      propertyPath: midairModifier
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114591394165532626, guid: 070ce5ebf4329dd48be342bffd444ddf,
+        type: 2}
+      propertyPath: midairDrag
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 070ce5ebf4329dd48be342bffd444ddf, type: 2}
@@ -75481,7 +75491,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh15096
+  m_Name: pb_Mesh41622
   serializedVersion: 8
   m_SubMeshes:
   - serializedVersion: 2
