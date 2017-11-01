@@ -662,8 +662,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
-  m_LocalRotation: {x: 0, y: 0.7103135, z: 0, w: 0.7038855}
-  m_LocalPosition: {x: 89.48475, y: 23.596384, z: -7.2500024}
+  m_LocalRotation: {x: 0, y: -0.81052583, z: 0, w: 0.58570296}
+  m_LocalPosition: {x: 10.224957, y: 48.846382, z: -4.671638}
   m_LocalScale: {x: 0.691574, y: 0.8463819, z: 1.0000002}
   m_Children:
   - {fileID: 4583761694803104}
@@ -1879,7 +1879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f05df918f179941bd7baebbf1c410e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2.5
+  walkSpeed: 1.8
   groundedLayerMask:
     serializedVersion: 2
     m_Bits: 4294965247
@@ -1890,8 +1890,8 @@ MonoBehaviour:
   useGravity: 1
   stairsGravityModifier: 0.01
   slideTime: 0.5
-  runModifier: 2
-  sprintDrainSpeed: 60
+  runModifier: 1.3
+  sprintDrainSpeed: 80
   sprintRegainSpeed: 60
   sneakModifier: 0.6
   grabModifier: 0.5
