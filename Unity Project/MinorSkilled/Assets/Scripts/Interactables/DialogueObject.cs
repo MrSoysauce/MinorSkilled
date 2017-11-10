@@ -2,7 +2,7 @@
 
 public class DialogueObject : CollisionInteractable
 {
-    private GameObject dialogueUI;
+    [SerializeField] private GameObject dialogueUI;
 
     private bool playerCanInteract = false;
 
@@ -18,9 +18,9 @@ public class DialogueObject : CollisionInteractable
     {
         if (interacting.CompareTag("Player"))
         {
-            playerCanInteract = true;
-            PlayerInteractions p = GetPlayerInteractionsFailSafe(interacting);
-            p.SetActiveDialogue(this);
+			playerCanInteract = false;
+			PlayerInteractions p = GetPlayerInteractionsFailSafe(interacting);
+			p.SetActiveDialogue(null);
         }
     }
 
@@ -28,9 +28,9 @@ public class DialogueObject : CollisionInteractable
     {
         if (interacting.CompareTag("Player"))
         {
-            playerCanInteract = false;
-            PlayerInteractions p = GetPlayerInteractionsFailSafe(interacting);
-            p.SetActiveDialogue(null);
+			playerCanInteract = false;
+			PlayerInteractions p = GetPlayerInteractionsFailSafe(interacting);
+			p.SetActiveDialogue(this);
         }
     }
 
@@ -60,6 +60,9 @@ public class DialogueObject : CollisionInteractable
 
     public void StartDialogue(PlayerController talking)
     {
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
+
         this.talking = talking;
         talking.canMove = false;
         talking.allowJump = false;
@@ -73,6 +76,9 @@ public class DialogueObject : CollisionInteractable
     /// </summary>
     public void EndDialogue()
     {
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+
         talking.allowJump = true;
         talking.canMove = true;
 
