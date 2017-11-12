@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
     [SerializeField] private Vector3 gravity = new Vector3(0,-20,0);
+	[SerializeField] private float groundedDetectRange = 1.2f;
     [SerializeField] public bool useGravity = true;
     [SerializeField] private float midairModifier = 0.5f;
     [SerializeField] private float midairDrag = 0.1f;
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool grabInput;
     [HideInInspector] public bool pulling;
-    public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 1.2f, groundedLayerMask); } }
+	public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, groundedDetectRange, groundedLayerMask); } }
     public bool IsGrounded(float distance) { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, distance, groundedLayerMask); }
 
     [Header("Input")]
