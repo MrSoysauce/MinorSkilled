@@ -4,37 +4,60 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed = 2;
-    [SerializeField] private LayerMask groundedLayerMask;
-    [SerializeField] private float jumpStrength = 5;
-    [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
+    [Header("Physics")]
     [SerializeField,Range(0,0.9999f)] private float drag = 0.5f;
     [SerializeField] private Vector3 gravity = new Vector3(0,-20,0);
-	[SerializeField] private float groundedDetectRange = 1.2f;
     [SerializeField] public bool useGravity = true;
-    [SerializeField] private float midairModifier = 0.5f;
-    [SerializeField] private float midairDrag = 0.1f;
+
+    [Header("Walking")]
+    [SerializeField] private float walkSpeed = 2;
     [SerializeField] private float stairsGravityModifier = 0.01f;
 
-    [Tooltip("The time the player has to be sprinting before he can slide (stops players from insta sliding)")]
-    [SerializeField] private float slideTime = 0.2f;
-
+    [Header("Sprinting")]
     [SerializeField] private float runModifier = 2;
     [SerializeField] private float sprintDrainSpeed = 0.1f;
     [SerializeField] private float sprintRegainSpeed = 0.2f;
 
+    [Header("Crouching")]
     [SerializeField] private float sneakModifier = 0.5f;
-    [SerializeField] private float grabModifier = 0.5f;
-
     [SerializeField] private float crouchDetectionDistance = 0.5f;
     [SerializeField] private LayerMask crouchDetectLayer;
-    [SerializeField] private float climbDistance = 1f;
-    [SerializeField] private float climbSpeed = 5;
 
-    [SerializeField] private LayerMask climbLayer;
+    public enum JumpMode { Controlled, MultiJump }
+    [Header("Jumping")]
+    [SerializeField] private LayerMask groundedLayerMask;
+	[SerializeField] private float groundedDetectRange = 1.2f;
+    [SerializeField] public JumpMode jumpMode;
+    //Controlled jumping
+    [SerializeField] private float jumpStrength = 5;
+    [SerializeField] private float controlledJumpTime = 0.1f;
+    private Coroutine controlledJumpTimer;
+    //Multi jumping
+    [SerializeField] private int multiJumps = 2;
+    [SerializeField] private float groundedJumpStrength = 6f;
+    [SerializeField] private float midairJumpStrength = 10f;
+    [SerializeField] private float multiJumpDelay = 0.1f;
+    private float jumps = 0;
+    private bool delayingJumps = false;
 
+    [Header("Mid-Air")]
+    [SerializeField] private float midairModifier = 0.5f;
+    [SerializeField] private float midairDrag = 0.1f;
+
+    [Header("Dragging")]
+    [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
+    [SerializeField] private float grabModifier = 0.5f;
     [SerializeField] private float grabDistance = 2f;
     [SerializeField] private float throwForce = 5f;
+
+    [Header("Climbing")]
+    [SerializeField] private float climbDistance = 1f;
+    [SerializeField] private float climbSpeed = 5;
+    [SerializeField] private LayerMask climbLayer;
+
+    [Header("Sliding")]
+    [Tooltip("The time the player has to be sprinting before he can slide (stops players from insta sliding)")]
+    [SerializeField] private float slideTime = 0.2f;
 
     [Header("Temp feedback")]
     [SerializeField] private GameObject visuals;
@@ -44,15 +67,12 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public float horizontalInput;
     [ReadOnly] public bool canMove = true;
 
-    [ReadOnly,SerializeField] private bool canJump = true;
+    [ReadOnly] public bool canJump = true;
     [HideInInspector] public bool allowJump = true;
         
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public bool grabInput;
     [HideInInspector] public bool pulling;
-	public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, groundedDetectRange, groundedLayerMask); } }
-    public bool IsGrounded(float distance) { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, distance, groundedLayerMask); }
-
     [Header("Input")]
     [ReadOnly] public bool jumpInput;
     [ReadOnly] public bool jumpInputPressed;
@@ -62,6 +82,9 @@ public class PlayerController : MonoBehaviour
     [ReadOnly] public bool isMoving;
 
     [ReadOnly] public float sprintCharge = 100;
+
+	public bool grounded { get { return Physics.Raycast(transform.position + Vector3.up, Vector3.down, groundedDetectRange + 1f, groundedLayerMask); } }
+    public bool IsGrounded(float distance) { return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, distance, groundedLayerMask); }
 
     private Vector3 forward;
     private Camera playerCamera;
@@ -102,23 +125,12 @@ public class PlayerController : MonoBehaviour
 	{
 	    GetInput();
 
-	    if (Input.GetKeyDown(KeyCode.Escape))
-	    {
-	        Cursor.visible = true;
-	        Cursor.lockState = CursorLockMode.None;
-	    }
-	    else if (Input.GetMouseButton(0))
-	    {
-	        Cursor.visible = false;
-	        Cursor.lockState = CursorLockMode.Locked;
-	    }
-
 	    //If the player is locked he should not be able to turn
         if (!canMove) return;
+
 	    Turn();
 
-	    //Check if can jump
-	    if (rb.velocity.y <= 0 && grounded) canJump = true;
+        VerifyJumpPossibility();
     }
 
     private void GetInput()
@@ -260,12 +272,13 @@ public class PlayerController : MonoBehaviour
         if (climbInput && !sliding && canClimb)
         {
             sprinting = false;
-            canJump = false;
             crouching = false;
-
             climbing = true;
+
+            allowJump = false;
         }
 
+        //Grabbing
         if (!climbing && !sliding)
         {
             if (grabInput && pickedObject == null)
@@ -273,7 +286,8 @@ public class PlayerController : MonoBehaviour
                 sprinting = false;
                 climbing = false;
                 sliding = false;
-                canJump = false;
+
+                allowJump = false;
 
                 grabbing = true;
 
@@ -308,6 +322,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        //Ungrabbing
         if (grabbing && !grabInput)
         {
             if (pickedObject != null)
@@ -323,11 +338,12 @@ public class PlayerController : MonoBehaviour
             grabbing = false;
         }
 
+        //Limit player if requested
         if (onlyWalk)
         {
             sliding = false;
             sprinting = false;
-            canJump = false;
+            allowJump = false;
         }
 
         //Temporary feedback
@@ -344,8 +360,9 @@ public class PlayerController : MonoBehaviour
 
         //Disable jumping when crouching or sliding
         if (crouching || sliding)
-            canJump = false;
+            allowJump = false;
 
+        //Sprint charger
         if (sprinting && isMoving)
             sprintCharge -= sprintDrainSpeed * Time.fixedDeltaTime;
         else
@@ -358,12 +375,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        bool g = grounded;
+        bool isGrounded = grounded;
 
         ProcessInput();
 
         float speed = walkSpeed;
-        if (sprinting && g) speed *= runModifier;
+        if (sprinting && isGrounded) speed *= runModifier;
         if (crouching) speed *= sneakModifier;
         if (grabbing) speed *= grabModifier;
         if (climbing) speed = 0;
@@ -378,52 +395,17 @@ public class PlayerController : MonoBehaviour
 
         if (!canMove && !sliding) return;
 
-        //Jump
-        if (jumpInput && canJump && allowJump)
-        {
-            rb.AddForce(0, jumpStrength * 100, 0);
+        //Apply jump input
+        Jump();
 
-            if (!jumpInputPressed || !IsGrounded(2))
-            {
-                canJump = false;
-                jumpInput = false;
-            }
-        }
+        //Apply movement
+        Move(isGrounded, speed);
 
-        //Run
-        float slow = 1;
-        slow *= pulling ? pullingSlow : 1;
-        if (!g)
-            slow *= midairModifier;
-        rb.AddForce(forward * speed * slow, ForceMode.Impulse);
+        //Apply climbing
+        Climb();
 
-        if (climbing)
-        {
-            if (ladder == null)
-                Debug.LogError("We are climbing without ladder?!");
-
-            Vector3 climbDirection = -ladder.forward;
-            Vector3 walkDir = forward;
-
-            climbDirection.Normalize();
-            walkDir.Normalize();
-            climbDirection.y = 0;
-            walkDir.y = 0;
-
-            float climb = Vector3.Dot(walkDir, climbDirection);
-            Vector3 forwardModifier = climbDirection * 2 * walkSpeed;
-            rb.velocity = new Vector3(rb.velocity.x, climbSpeed * climb, rb.velocity.z) + forwardModifier;
-        }
-
-        float d = 0;
-        if (climbing)
-            d = 0;
-        else if (!g)
-            d = midairDrag;
-        else
-            d = drag;
-
-        rb.velocity = new Vector3(rb.velocity.x * (1 - d), rb.velocity.y, rb.velocity.z * (1 - d));
+        //Apply drag
+        ApplyDrag(isGrounded);
     }
 
     private void OnDrawGizmos()
@@ -476,5 +458,119 @@ public class PlayerController : MonoBehaviour
         slidingRoutine = null;
 
         rb.constraints = constraints;
+    }
+
+    private void VerifyJumpPossibility()
+    {
+        if (grounded)
+        {
+            canJump = true;
+            jumps = multiJumps;
+
+            if (controlledJumpTimer != null)
+            {
+                StopCoroutine(controlledJumpTimer);
+                controlledJumpTimer = null;
+            }
+        }
+    }
+
+    private void Jump()
+    {
+        //Jump
+        if (jumpInput && allowJump && canJump)
+        {
+            switch (jumpMode)
+            {
+                case JumpMode.Controlled:
+                    if (controlledJumpTimer == null)
+                        controlledJumpTimer = StartCoroutine(CountDownControlledJump());
+                    rb.AddForce(0, jumpStrength*100, 0, ForceMode.Acceleration);
+
+                    if (!jumpInputPressed)//|| !IsGrounded(2))
+                    {
+                        canJump = false;
+                        jumpInput = false;
+                    }
+                    break;
+                case JumpMode.MultiJump:
+                    if (delayingJumps)
+                        break;
+
+                    if (jumps <= 0)
+                    {
+                        canJump = false;
+                        jumps = 0;
+                        jumpInput = false;
+                        break;
+                    }
+
+                    jumpInput = false;
+                    if (grounded)
+                        rb.velocity = new Vector3(rb.velocity.x, groundedJumpStrength, rb.velocity.z);
+                    else
+                        rb.velocity = new Vector3(rb.velocity.x, midairJumpStrength, rb.velocity.z);
+                    jumps--;
+
+                    delayingJumps = true;
+                    StartCoroutine(DelayMultiJump());
+                    break;
+            }
+        }
+    }
+
+    private IEnumerator CountDownControlledJump()
+    {
+        yield return new WaitForSeconds(controlledJumpTime);
+        canJump = false;
+        jumpInput = false;
+        controlledJumpTimer = null;
+    }
+
+    private void Move(bool isGrounded, float speed)
+    {
+        //Move
+        float slow = 1;
+        slow *= pulling ? pullingSlow : 1;
+        if (!isGrounded)
+            slow *= midairModifier;
+        rb.AddForce(forward * speed * slow, ForceMode.Impulse);
+    }
+
+    private void Climb()
+    {
+        if (!climbing) return;
+
+        Debug.Assert(ladder != null, "We are climbing without a ladder!?");
+        Vector3 climbDirection = -ladder.forward;
+        Vector3 walkDir = forward;
+
+        climbDirection.Normalize();
+        walkDir.Normalize();
+        climbDirection.y = 0;
+        walkDir.y = 0;
+
+        float climb = Vector3.Dot(walkDir, climbDirection);
+        Vector3 forwardModifier = climbDirection * 2 * walkSpeed;
+        rb.velocity = new Vector3(rb.velocity.x, climbSpeed * climb, rb.velocity.z) + forwardModifier;
+    }
+
+    private void ApplyDrag(bool isGrounded)
+    {
+        float d;
+        if (climbing)
+            d = 0;
+        else if (!isGrounded)
+            d = midairDrag;
+        else
+            d = drag;
+
+        rb.velocity = new Vector3(rb.velocity.x * (1 - d), rb.velocity.y, rb.velocity.z * (1 - d));
+    }
+
+    private IEnumerator DelayMultiJump()
+    {
+        yield return new WaitForSeconds(multiJumpDelay);
+        delayingJumps = false;
     }
 }
