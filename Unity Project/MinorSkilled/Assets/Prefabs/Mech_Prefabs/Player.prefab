@@ -268,7 +268,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4232999222693900}
   - component: {fileID: 136599095235291796}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Collider
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -663,7 +663,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114296919977322}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3, y: 37.5, z: -3.75}
+  m_LocalPosition: {x: 5.75, y: 0.75, z: 5.75}
   m_LocalScale: {x: 0.69157374, y: 0.8463819, z: 1}
   m_Children:
   - {fileID: 4583761694803104}
@@ -1879,35 +1879,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f05df918f179941bd7baebbf1c410e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2.5
-  groundedLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294965247
-  jumpStrength: 1.2
-  pullingSlow: 0.3
-  drag: 0.3
-  gravity: {x: 0, y: -60, z: 0}
+  drag: 0.4
+  gravity: {x: 0, y: -50, z: 0}
   useGravity: 1
-  midairModifier: 0.2
-  midairDrag: 0.05
+  walkSpeed: 1.8
   stairsGravityModifier: 0.01
-  slideTime: 0.5
-  runModifier: 2
-  sprintDrainSpeed: 60
-  sprintRegainSpeed: 60
+  runModifier: 1.7
+  sprintDrainSpeed: 100
+  sprintRegainSpeed: 30
   sneakModifier: 0.6
-  grabModifier: 0.5
   crouchDetectionDistance: 0.5
   crouchDetectLayer:
     serializedVersion: 2
     m_Bits: 4294966271
+  groundedLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294965247
+  groundedDetectRange: 1.1
+  jumpMode: 1
+  jumpStrength: 1.1
+  controlledJumpTime: 0.1
+  multiJumps: 2
+  groundedJumpStrength: 12
+  midairJumpStrength: 12
+  multiJumpDelay: 0.15
+  midairModifier: 0.3
+  midairDrag: 0.05
+  pullingSlow: 0.3
+  grabModifier: 0.5
+  grabDistance: 0.25
+  throwForce: 250
   climbDistance: 1
   climbSpeed: 2.2
   climbLayer:
     serializedVersion: 2
     m_Bits: 256
-  grabDistance: 0.25
-  throwForce: 250
+  slideTime: 0.4
   visuals: {fileID: 1437968864215724}
   verticalInput: 0
   horizontalInput: 0
@@ -1975,7 +1982,7 @@ MonoBehaviour:
   - {fileID: 4233344019147662}
   - {fileID: 4682266022373348}
   col: {fileID: 136599095235291796}
-  fallDeathTreshold: 31
+  fallDeathTreshold: 0
   audioSprintRange: 12
   drawAudioSprintRange: 0
   audioCrouchRange: 4.7

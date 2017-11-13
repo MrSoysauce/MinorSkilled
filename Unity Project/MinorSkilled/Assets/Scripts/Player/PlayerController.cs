@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundedJumpStrength = 6f;
     [SerializeField] private float midairJumpStrength = 10f;
     [SerializeField] private float multiJumpDelay = 0.1f;
-    private float jumps = 0;
+    private int jumps = 0;
     private bool delayingJumps = false;
 
     [Header("Mid-Air")]
@@ -472,6 +472,12 @@ public class PlayerController : MonoBehaviour
                 StopCoroutine(controlledJumpTimer);
                 controlledJumpTimer = null;
             }
+        }
+        else
+        {
+            //Remove one jump
+            if (jumps == multiJumps)
+                jumps--;
         }
     }
 
