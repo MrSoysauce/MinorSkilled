@@ -146,8 +146,8 @@ public class PlayerController : MonoBehaviour
         climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f; //Left ctrl or trigger
         grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3); //J or Y
 
-        sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Joystick1Button2); //Left shift or X
-        crouchInput = Input.GetKey(KeyCode.K) || Input.GetAxis("XboxAxis9") > 0.5f; //K or trigger
+		sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetAxis("XboxAxis9") > 0.5f; //K or trigger
+		crouchInput = Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.Joystick1Button2); //Left shift or X 
     }
 
     private void Turn()
