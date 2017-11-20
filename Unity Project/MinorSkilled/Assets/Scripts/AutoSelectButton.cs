@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class AutoSelectButton : MonoBehaviour
@@ -15,6 +12,7 @@ public class AutoSelectButton : MonoBehaviour
 
     private void OnEnable()
     {
-        button.Select();
+        if (button != null)
+            button.Select();
     }
 }
