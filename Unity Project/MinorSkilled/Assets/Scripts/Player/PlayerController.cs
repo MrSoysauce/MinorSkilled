@@ -211,6 +211,7 @@ public class PlayerController : MonoBehaviour
         crouching = crouchInput;
         sprinting = sprintInput;
 
+		allowJump = true;
         //Are crouching, don't sprint
         if (wasCrouching)
         {
