@@ -66,7 +66,6 @@ public class PlayerControllerEditor : Editor
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginVertical("Box");
-        EditorGUILayout.PropertyField(obj.FindProperty("pullingSlow"));
         EditorGUILayout.PropertyField(obj.FindProperty("grabModifier"));
         EditorGUILayout.PropertyField(obj.FindProperty("grabDistance"));
         EditorGUILayout.PropertyField(obj.FindProperty("throwForce"));
