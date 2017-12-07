@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class ToolTip : CollisionInteractable
 {
     [SerializeField] private GameObject toolTip;
@@ -31,3 +32,4 @@ public class ToolTip : CollisionInteractable
         base.OnEndInteract(interacting);
     }
 }
+*/

@@ -1,29 +1,35 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
+#pragma warning disable 649
+
 public class Inventory : MonoBehaviour
 {
     #region tooltip string
+    private const string tooltip1 = "Enables debug tool to print out inventory data";
     private const string tooltip2 = "Prefab of the slot gameobject";
     private const string tooltip3 = "Prefab of the item gameobject";
     private const string tooltip4 = "The panel in the scene where the slots are added to";
     #endregion
 
     [HideInInspector] public ItemDatabase database;              //The item database containing the properties of the items
+    [Tooltip(tooltip1)][SerializeField] private bool debug;                         //Enables debug prints
     [Tooltip(tooltip2)][SerializeField] private GameObject slotPrefab;              //The prefab of the slot
     [Tooltip(tooltip3)][SerializeField] private GameObject itemPrefab;              //The prefab of the item
     [Tooltip(tooltip4)][SerializeField] private Transform inventoryPanel;           //UI panel in the scene
 
     [SerializeField] private int slotAmount;
-    [SerializeField] private float slotRadius = 50;
-
-    [SerializeField] private InventoryToolTip tooltip;
+    [SerializeField] private float slotRadius;
+    private int oldSlotAmount;
 
     public Canvas canvas;
     [HideInInspector] public List<Item> items;
     [HideInInspector] public List<GameObject> slots;
+
+    public Tooltip toolTip;
 
     private List<Slot> slotObjects;
 
@@ -35,6 +41,7 @@ public class Inventory : MonoBehaviour
 
     private void ConstructInventory()
     {
+        oldSlotAmount = slotAmount;
         database = new ItemDatabase();
         items = new List<Item>();
         slots = new List<GameObject>();
@@ -45,11 +52,11 @@ public class Inventory : MonoBehaviour
         {
             items.Add(new Item());
             slots.Add(Instantiate(slotPrefab));
+            slots[i].transform.SetParent(inventoryPanel);
             slotObjects.Add(slots[i].GetComponent<Slot>());
             slotObjects[i].id = i;
             slotObjects[i].inv = this;
-            slots[i].transform.SetParent(inventoryPanel);
-            slotObjects[i].transform.RotateAround(inventoryPanel.transform.position, inventoryPanel.transform.forward, interpolate * i + 15);
+            slotObjects[i].transform.RotateAround(inventoryPanel.transform.position, inventoryPanel.transform.forward, interpolate * i + 20);
             slotObjects[i].transform.position = inventoryPanel.transform.position +
                                                 (slotObjects[i].transform.position - inventoryPanel.transform.position)
                                                 .normalized * slotRadius;
@@ -90,13 +97,6 @@ public class Inventory : MonoBehaviour
     public void AddItem(int id)
     {
         Item itemToAdd = database.FetchItemByID(id);
-        if (itemToAdd == null)
-        {
-            Debug.LogWarning("Item with ID " + id + " wasn't found. Not adding anything!");
-            return;
-        }
-
-        //Get all items with the same id
         List<Item> itemInstances = ItemInstancesInInventory(itemToAdd.ID);
         ItemData lowestItemAmount = LowestItemAmount(itemToAdd);
         if (itemInstances.Count > 0 && itemToAdd.Stackable && lowestItemAmount.amount < itemToAdd.MaxStack)
@@ -130,12 +130,16 @@ public class Inventory : MonoBehaviour
             {
                 items[i] = item;
                 GameObject itemObj = Instantiate(itemPrefab);
-                itemObj.GetComponent<ItemData>().tooltip = tooltip;
-                itemObj.GetComponent<ItemData>().inventory = this;
                 itemObj.GetComponent<ItemData>().item = item;
                 itemObj.GetComponent<ItemData>().slot = i;
                 itemObj.transform.SetParent(slots[i].transform);
-                itemObj.transform.localPosition = Vector3.zero;
+
+                RectTransform rectTransform = itemObj.GetComponent<RectTransform>();
+
+                //Reset anchor presets
+                rectTransform.offsetMin = new Vector2(0, 0);
+                rectTransform.offsetMax = new Vector2(0, 0);
+
                 itemObj.GetComponent<Image>().sprite = item.GetSprite();
                 break;
             }
@@ -150,8 +154,7 @@ public class Inventory : MonoBehaviour
     {
         if (data.amount == 0) data.amount++;
         data.amount++;
-        if (data.transform.childCount != 0)
-            data.transform.GetChild(0).GetComponent<Text>().text = data.amount.ToString();
+        data.transform.GetChild(0).GetComponent<Text>().text = data.amount.ToString();
     }
 
     /// <summary>
@@ -163,6 +166,7 @@ public class Inventory : MonoBehaviour
         if (slots[index].transform.childCount != 0) Destroy(slots[index].transform.GetChild(0).gameObject);
         else return;
         items[index] = new Item();
+        print("Item destroyed");
     }
 
     public void DestroyItem(int id)
@@ -187,15 +191,47 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
+        if (debug)
+            DebugPrint();
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             inventoryPanel.gameObject.SetActive(!inventoryPanel.gameObject.activeSelf);
-            tooltip.Deactivate();
+            toolTip.Deactivate();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (slotAmount != oldSlotAmount)
         {
-            AddItem(0);
+            //Attempt to change slot amount while debugging
+            List<Item> tempItems = items;
+            List<GameObject> tempSlot = slots;
+            List<Slot> tempSlotObj = slotObjects;
+
+            foreach (GameObject slot in slots)
+                Destroy(slot);
+            foreach (Slot slotObject in slotObjects)
+                Destroy(slotObject);
+            ConstructInventory();
+            items = tempItems;
+            slots = tempSlot;
+            slotObjects = tempSlotObj;
         }
+    }
+
+    private void DebugPrint()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            int itemNumber = Random.Range(0, database.items.Count);
+            AddItem(itemNumber);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            print(items.Aggregate("", (current, item) => current + item.ToString()));
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+            print(database);
     }
 }
