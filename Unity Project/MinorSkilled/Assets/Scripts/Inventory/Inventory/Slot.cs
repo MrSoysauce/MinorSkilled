@@ -1,11 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IDropHandler
 {
     [HideInInspector] public int id;
     [HideInInspector] public Inventory inv;
+
+    private bool selected = false;
 
     public void OnDrop(PointerEventData eventData)
     {

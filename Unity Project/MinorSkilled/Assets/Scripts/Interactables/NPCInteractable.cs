@@ -9,7 +9,7 @@ public class NPCInteractable : CollisionInteractable
             PlayerController pc = interacting.GetComponent<PlayerController>();
             if (pc != null) pc.allowJump = false;
 
-            PlayerInteractions pi = interacting.GetComponent<PlayerInteractions>();
+            //PlayerInteractions pi = interacting.GetComponent<PlayerInteractions>();
             //if (pi != null) pi.SetNPCInRange(this);
         }
     }
@@ -21,7 +21,7 @@ public class NPCInteractable : CollisionInteractable
             PlayerController pc = interacting.GetComponent<PlayerController>();
             if (pc != null) pc.allowJump = true;
 
-            PlayerInteractions pi = interacting.GetComponent<PlayerInteractions>();
+            //PlayerInteractions pi = interacting.GetComponent<PlayerInteractions>();
             //if (pi != null) pi.SetNPCInRange(null);
         }
     }
