@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float midairDrag = 0.1f;
 
     [Header("Dragging")]
-    [SerializeField, Range(0, 1)] private float pullingSlow = 0.3f;
     [SerializeField] private float grabModifier = 0.5f;
     [SerializeField] private float grabDistance = 2f;
     [SerializeField] private float throwForce = 5f;
@@ -140,14 +139,14 @@ public class PlayerController : MonoBehaviour
         isMoving = Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f;
 
         if (!jumpInput)
-            jumpInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0); //Space or A
-        jumpInputPressed = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0); //Space or A
+            jumpInput = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0); //Space or A
+        jumpInputPressed = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0); //Space or A
 
         climbInput = Input.GetKey(KeyCode.LeftControl) || Input.GetAxis("XboxAxis10") > 0.5f; //Left ctrl or trigger
-        grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.Joystick1Button3); //J or Y
+        grabInput = Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton1); //J or Y
 
 		sprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetAxis("XboxAxis9") > 0.5f; //K or trigger
-		crouchInput = Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.Joystick1Button2); //Left shift or X 
+		crouchInput = Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.JoystickButton2); //Left shift or X 
     }
 
     private void Turn()
@@ -311,7 +310,7 @@ public class PlayerController : MonoBehaviour
 
                         if (grab.liftable)
                         {
-                            hit.transform.localPosition = new Vector3(0, 2.5f, 0);
+                            hit.transform.localPosition = grab.liftingOffset;
                             hit.transform.SetParent(transform);
                         }
                         else
@@ -538,7 +537,7 @@ public class PlayerController : MonoBehaviour
     {
         //Move
         float slow = 1;
-        slow *= pulling ? pullingSlow : 1;
+        //slow *= pulling ? grabModifier : 1;
         if (!isGrounded)
             slow *= midairModifier;
         rb.AddForce(forward * speed * slow, ForceMode.Impulse);

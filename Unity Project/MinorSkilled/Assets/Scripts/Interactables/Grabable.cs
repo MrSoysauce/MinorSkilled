@@ -9,6 +9,7 @@ public class Grabable : RaycastInteractable
     private bool grabbed;
 
     public bool liftable = true;
+    public Vector3 liftingOffset = new Vector3(0, 1, 0);
 
     private void Start()
     {
@@ -28,7 +29,7 @@ public class Grabable : RaycastInteractable
         if (grabbed && transform.parent.CompareTag("Player"))
         {
             if (liftable)
-                transform.localPosition = new Vector3(0, 2.5f, 0);
+                transform.localPosition = liftingOffset;
         }
     }
 

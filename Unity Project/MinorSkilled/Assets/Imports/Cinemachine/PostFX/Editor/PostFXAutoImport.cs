@@ -17,7 +17,7 @@ namespace Cinemachine.PostFX
                 = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                    from type in assembly.GetTypes()
                    where type.Name == "PostProcessingProfile"
-                   select type).Count() > 0;
+                   select type).Any();
             if (havePostProcessing)
             {
                 string path = GetScriptPath();
