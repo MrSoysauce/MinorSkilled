@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
 using Object = UnityEngine.Object;
 
 public class ItemDatabaseWindow : EditorWindow
@@ -11,10 +11,11 @@ public class ItemDatabaseWindow : EditorWindow
 
     private Dictionary<int, OnGUIImplementation> menus;
     private ItemDatabase itemDatabase;
-    private readonly List<bool> manageItem = new List<bool>();
+    private List<bool> manageItem = new List<bool>();
     private Item addItem;
     private int selectionGridInt;
     private Vector2 scrollPosition;
+
 
     [MenuItem("Inventory manager/Open Item Manager %e")] //Opens when CTRL + E is pressed
     public static void ShowWindow()
@@ -22,7 +23,7 @@ public class ItemDatabaseWindow : EditorWindow
         GetWindow<ItemDatabaseWindow>(false, "Item manager");
     }
 
-    void Awake()
+    void OnEnable()
     {
         addItem = new Item();
         menus = new Dictionary<int, OnGUIImplementation>();
@@ -73,9 +74,6 @@ public class ItemDatabaseWindow : EditorWindow
                 addItem.ID = 0;
             }
             else addItem.ID = itemDatabase.items.Count;
-
-            if (itemDatabase == null) Debug.Log("What");
-            if (itemDatabase.items == null) Debug.Log("Wott");
             itemDatabase.items.Add(addItem);
             addItem = new Item();
         }
@@ -126,7 +124,7 @@ public class ItemDatabaseWindow : EditorWindow
                     GUILayout.Height(70)
                     );
                 GUILayout.EndHorizontal();
-                addItem.type = (ItemType) EditorGUILayout.EnumPopup("Item type", addItem.type);
+                item.type = (ItemType) EditorGUILayout.EnumPopup("Item type", item.type);
                 item.Stackable = EditorGUILayout.Toggle("Stackable", item.Stackable);
                 item.CrateDrop = EditorGUILayout.Toggle("Crate drop?", item.CrateDrop);
                 if (item.Stackable)
@@ -134,12 +132,7 @@ public class ItemDatabaseWindow : EditorWindow
                         GUILayout.Width(position.width/2));
                 Object spriteObj = EditorGUILayout.ObjectField("Item Icon", item.GetSprite(),
                     typeof(Sprite), false, GUILayout.Width(position.width - 45));
-                if (spriteObj != null)
-                {
-                    addItem.SpriteFilePath = GetResourcesFilePath(spriteObj);
-                    Debug.Log("Sprite path: " + addItem.SpriteFilePath);
-                }
-                else addItem.SpriteFilePath = "";
+                addItem.SpriteFilePath = spriteObj != null ? GetResourcesFilePath(spriteObj) : "";
             }
             GUILayout.EndVertical();
         }
@@ -163,7 +156,7 @@ public class ItemDatabaseWindow : EditorWindow
 
     void OnGUI()
     {
-        if (menus == null) Awake();
+        if (menus == null) OnEnable();
         string[] selStrings = {"Add item", "Edit Items"};
         selectionGridInt = GUILayout.SelectionGrid(selectionGridInt, selStrings, 2);
         if (menus != null)
