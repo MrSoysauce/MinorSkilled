@@ -1,0 +1,13 @@
+﻿Allora farei una cosa così:
+Un <comando> è una riga nella forma
+<parola chiave> : <bersaglio>
+Una <parola chiave> è: say|load|choice|backdrop|marker|jump|end
+Un <bersaglio> è:  <stringa> | <dizionario>
+Una <stringa> è un insieme di caratteri alfanumerici delimitato dal carattere \n
+Un  <dizionario> è formato da:
+begin
+    <voce>
+end
+Una <voce> è:
+\t | <stringa> : <stringa>
+| <voce>\n<voce>

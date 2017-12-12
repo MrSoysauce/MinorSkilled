@@ -1,0 +1,30 @@
+Comments are lines with no colons in them.
+
+This is a comment, the next line is not.
+
+backdrop: clint
+Archer : Testing
+Lana | position 2: Testing what?
+Archer | position 0: The framework, duh!
+
+marker: loop
+Lana | position 2: What framework? What are you talking about?
+
+Archer | if looping false: THE ONE THAT WORKS! YES!
+
+Archer | if looping true: Wait, are we doing this again?
+backdrop: guitar
+
+choice: Wanna go again?
+	option | loop, set looping true: Yes
+	option | ending, sound nope: No
+	option | dangerzone: Danger Zone!
+	endchoice:
+
+marker: ending
+Lana | sound nope: You know, i don't even wanna know.
+marker: end
+
+marker: dangerzone
+bgm: Kenny Loggins - Danger Zone
+jump: ending

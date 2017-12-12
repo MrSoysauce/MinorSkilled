@@ -7,8 +7,6 @@ public class GameManager : Singleton<GameManager>
 {
     public GameObject player;
 
-    public Inventory inventory;
-
     protected override void Awake()
     {
         if (player == null) player = GameObject.FindWithTag("Player");
