@@ -7,7 +7,6 @@ using UnityEditor;
 
 public class PlayerInteractions : MonoBehaviour
 {
-    private DialogueObject dialogue;
     private PlayerController player;
 
     [SerializeField] private Collider flyingEnemyCollider;
@@ -71,11 +70,6 @@ public class PlayerInteractions : MonoBehaviour
         flyingEnemyCollider.enabled = false;
     }
 
-    public void SetActiveDialogue(DialogueObject interactable)
-    {
-        dialogue = interactable;
-    }
-
     public void SetRotatePad(RotatePad pad)
     {
         rotatePad = pad;
@@ -83,10 +77,6 @@ public class PlayerInteractions : MonoBehaviour
 
     private void Update()
     {
-        bool interactInput = Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button1);
-        if (interactInput)
-            Interact();
-
         bool rotatePadInput = Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Joystick1Button1);
         if (rotatePadInput && rotatePad)
         {
@@ -95,13 +85,6 @@ public class PlayerInteractions : MonoBehaviour
         }
 
         bumpingSoundMod = Mathf.Lerp(bumpingSoundMod, 1, bumpSoundModDecreaseSpeed * Time.deltaTime);
-    }
-
-    private void Interact()
-    {
-        //We talking
-        if (dialogue != null)
-            dialogue.StartDialogue(player);
     }
 
     public void SetCheckpointToCurrentPos()
