@@ -8,6 +8,7 @@ TagManager:
   - MovingPlatform
   - Stairs
   - NoFallDamage
+  - Block
   layers:
   - Default
   - TransparentFX
