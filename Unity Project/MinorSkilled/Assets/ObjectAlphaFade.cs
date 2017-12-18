@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectAlpahFade : MonoBehaviour
+public class ObjectAlphaFade : MonoBehaviour
 {
 
     [Tooltip("Object that will fade out on trigger.")]
@@ -20,7 +20,7 @@ public class ObjectAlpahFade : MonoBehaviour
             if (objectToFade != null)
             {
                 MakeTransparent(objectToFade);
-                iTween.FadeTo(objectToFade, alphaAmount, fadeSpeed);
+                iTween.FadeTo(objectToFade, alphaAmount, fadeSpeed * Time.deltaTime);
             }
         }
     }
@@ -32,7 +32,7 @@ public class ObjectAlpahFade : MonoBehaviour
             if (objectToFade != null)
             {
                 MakeOpaque(objectToFade);
-                iTween.FadeTo(objectToFade, alphaAmount, fadeSpeed);
+                iTween.FadeTo(objectToFade, alphaAmount, fadeSpeed * Time.deltaTime);
             }
         }
     }
